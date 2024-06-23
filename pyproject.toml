@@ -1,17 +1,15 @@
 [tool.poetry]
-name = "models"
+name = "darwin-connect"
 version = "0.1.0"
 description = ""
 authors = ["Robbie Anderson <ra12g14@gmail.com>"]
 readme = "README.md"
-packages = [ {include = "src"} ]
+packages = [ {include = "cli.py"} ]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-pytest = "^8.2.2"
-pre-commit = "^3.7.1"
-black = "^24.4.2"
-
+clients = {path = "clients", develop = true}
+models = {path = "models", develop = true}
 
 [build-system]
 requires = ["poetry-core"]

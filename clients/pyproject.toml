@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "clients"
+version = "0.1.0"
+description = ""
+authors = ["Robbie Anderson <ra12g14@gmail.com>"]
+readme = "README.md"
+packages = [ {include = "src"} ]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pytest = "^8.2.2"
+stomp-py = "^8.1.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

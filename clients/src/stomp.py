@@ -1,15 +1,22 @@
 from __future__ import annotations
 
+import io
 import logging
 import os
 import socket
 import time
+import zlib
 from dataclasses import dataclass
 
 import stomp
+import xmltodict
+from stomp.utils import Frame
 
 
 class InvalidCredentials(Exception): ...
+
+
+class InvalidMessage(Exception): ...
 
 
 RECONNECT_DELAY_SECS = 15
@@ -35,7 +42,8 @@ class StompListener(stomp.ConnectionListener):
         logging.info("Connecting to " + host_and_port[0])
 
     def on_message(self, frame) -> None:
-        print(frame)
+
+        print(RawMessage.create(frame))
 
 
 HEARTBEAT_INTERVAL_MS = 25000
@@ -56,13 +64,9 @@ class StompClient:
         connect_header = {"client-id": username + "-" + client_id}
         subscribe_header = {"activemq.subscriptionName": client_id}
 
-        self.conn.connect(
-            username=username, passcode=password, wait=True, headers=connect_header
-        )
+        self.conn.connect(username=username, passcode=password, wait=True, headers=connect_header)
 
-        self.conn.subscribe(
-            destination=topic, id="1", ack="auto", headers=subscribe_header
-        )
+        self.conn.subscribe(destination=topic, id="1", ack="auto", headers=subscribe_header)
 
         print("Connected")
 
@@ -102,3 +106,26 @@ class Credentials:
             raise InvalidCredentials("Missing username or password")
 
         return cls(username, password)
+
+
+@dataclass
+class RawMessage:
+
+    message_type: str
+    body: dict
+
+    @classmethod
+    def create(cls, frame: Frame) -> RawMessage:
+
+        try:
+            message_type = frame.headers["MessageType"]
+        except KeyError:
+            raise InvalidMessage(f"MessageType not found in frame headers {frame.headers}")
+
+        bio = io.BytesIO()
+        bio.write(str.encode("utf-16"))
+        bio.seek(0)
+        msg = zlib.decompress(frame.body, zlib.MAX_WBITS | 32)  # type: ignore
+        data = xmltodict.parse(msg)
+
+        return cls(message_type, data)

@@ -6,11 +6,14 @@ import os
 import socket
 import time
 import zlib
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 import stomp
 import xmltodict
 from stomp.utils import Frame
+
+from models.src.common import MessageType, NoValidMessageTypeFound
 
 
 class InvalidCredentials(Exception): ...
@@ -22,7 +25,23 @@ class InvalidMessage(Exception): ...
 RECONNECT_DELAY_SECS = 15
 
 
+class MessageParserInterface(ABC):
+
+    @abstractmethod
+    def parse(self, data: dict) -> None: ...
+
+
+@dataclass
+class RegisteredParser:
+
+    message_type: MessageType
+    parser: MessageParserInterface
+
+
 class StompListener(stomp.ConnectionListener):
+
+    def __init__(self, parsers: dict[MessageType, MessageParserInterface]) -> None:
+        self._parsers = parsers
 
     def on_heartbeat(self) -> None:
         print("Received a heartbeat")
@@ -43,7 +62,23 @@ class StompListener(stomp.ConnectionListener):
 
     def on_message(self, frame) -> None:
 
-        print(RawMessage.create(frame))
+        raw_message = RawMessage.create(frame)
+
+        try:
+            msg_type = MessageType.parse(raw_message.message_type)
+        except NoValidMessageTypeFound:
+            print(f"Invalid message type {raw_message.message_type}")
+            return
+
+        try:
+            self._parsers[msg_type].parse(raw_message.body)
+        except KeyError:
+            print(f"No registered parser for {msg_type}")
+            return
+
+    @classmethod
+    def create(cls, parsers: list[RegisteredParser]) -> StompListener:
+        return cls({parser.message_type: parser.parser for parser in parsers})
 
 
 HEARTBEAT_INTERVAL_MS = 25000
@@ -51,15 +86,16 @@ HEARTBEAT_INTERVAL_MS = 25000
 
 class StompClient:
 
-    def __init__(self, conn: stomp.Connection12) -> None:
+    def __init__(self, conn: stomp.Connection12, listener: StompListener) -> None:
 
         self.conn = conn
+        self._listener = listener
 
     def connect(self, username: str, password: str, topic: str) -> None:
 
         client_id = socket.getfqdn()
 
-        self.conn.set_listener("", StompListener())
+        self.conn.set_listener("", self._listener)
 
         connect_header = {"client-id": username + "-" + client_id}
         subscribe_header = {"activemq.subscriptionName": client_id}
@@ -74,7 +110,7 @@ class StompClient:
         self.conn.disconnect()
 
     @classmethod
-    def create(cls, hostname: str, port: int) -> StompClient:
+    def create(cls, hostname: str, port: int, parsers: list[RegisteredParser]) -> StompClient:
         return cls(
             stomp.Connection12(
                 [(hostname, port)],
@@ -86,7 +122,8 @@ class StompClient:
                 reconnect_sleep_max=60.0,
                 reconnect_attempts_max=60,
                 heart_beat_receive_scale=2.5,
-            )
+            ),
+            StompListener.create(parsers),
         )
 
 

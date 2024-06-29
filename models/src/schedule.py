@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
@@ -113,7 +112,6 @@ class ScheduleMessage:
 
     @classmethod
     def create(cls, body: dict, ts: datetime) -> ScheduleMessage:
-
         raw_locs = []
         updates = []
 
@@ -126,37 +124,3 @@ class ScheduleMessage:
             updates.extend(LocationUpdates.create(raw_loc).updates)
 
         return cls(updates, ServiceUpdate.create(body, ts))
-
-
-class ScheduleParserInterface(ABC):
-
-    @abstractmethod
-    def parse(self, raw_body: dict) -> list[ScheduleMessage]: ...
-
-
-class ScheduleParser(ScheduleParserInterface):
-
-    def parse(self, raw_body: dict) -> list[ScheduleMessage]:
-
-        try:
-            data = raw_body["Pport"]
-        except KeyError as exception:
-            raise InvalidServiceUpdate(f"Cannot extract pPort from {raw_body}") from exception
-
-        try:
-            ts = datetime.fromisoformat(data["@ts"])
-        except KeyError as exception:
-            raise InvalidServiceUpdate(f"Cannot extract ts from {data}") from exception
-
-        try:
-            ur = data["uR"]
-            schedules = ur["schedule"]
-        except KeyError as exception:
-            raise InvalidServiceUpdate(f"Cannot extract uR or schedule from {data}") from exception
-
-        messages = []
-
-        for message in schedules:
-            messages.append(ScheduleMessage.create(message, ts))
-
-        return messages

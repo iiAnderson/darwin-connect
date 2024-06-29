@@ -4,7 +4,10 @@ import time
 
 import click
 
-from clients.src.stomp import Credentials, StompClient
+from clients.src.stomp import Credentials, RegisteredParser, StompClient
+from models.src.common import MessageType
+
+from .parser import ScheduleParser
 
 
 @click.command()
@@ -15,7 +18,9 @@ def main() -> None:
     topic = "/topic/darwin.pushport-v16"
 
     credentials = Credentials.parse()
-    client = StompClient.create(hostname=hostname, port=port)
+    client = StompClient.create(
+        hostname=hostname, port=port, parsers=[RegisteredParser(MessageType.SC, ScheduleParser())]
+    )
 
     client.connect(credentials.username, credentials.password, topic)
 

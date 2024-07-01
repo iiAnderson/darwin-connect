@@ -13,7 +13,11 @@ import stomp
 import xmltodict
 from stomp.utils import Frame
 
-from models.src.common import MessageType, NoValidMessageTypeFound
+from models.src.common import (
+    MessageType,
+    NoValidMessageTypeFound,
+    WritableMessage,
+)
 
 
 class InvalidCredentials(Exception): ...
@@ -28,7 +32,13 @@ RECONNECT_DELAY_SECS = 15
 class MessageParserInterface(ABC):
 
     @abstractmethod
-    def parse(self, data: dict) -> None: ...
+    def parse(self, data: dict) -> list[WritableMessage]: ...
+
+
+class WriterInterface(ABC):
+
+    @abstractmethod
+    def write(self, msg: dict) -> None: ...
 
 
 @dataclass
@@ -40,8 +50,9 @@ class RegisteredParser:
 
 class StompListener(stomp.ConnectionListener):
 
-    def __init__(self, parsers: dict[MessageType, MessageParserInterface]) -> None:
+    def __init__(self, parsers: dict[MessageType, MessageParserInterface], writer: WriterInterface) -> None:
         self._parsers = parsers
+        self._writer = writer
 
     def on_heartbeat(self) -> None:
         print("Received a heartbeat")
@@ -71,14 +82,17 @@ class StompListener(stomp.ConnectionListener):
             return
 
         try:
-            self._parsers[msg_type].parse(raw_message.body)
+            parsed_messages = self._parsers[msg_type].parse(raw_message.body)
         except KeyError:
             print(f"No registered parser for {msg_type}")
             return
 
+        for msg in parsed_messages:
+            self._writer.write(msg.to_dict())
+
     @classmethod
-    def create(cls, parsers: list[RegisteredParser]) -> StompListener:
-        return cls({parser.message_type: parser.parser for parser in parsers})
+    def create(cls, parsers: list[RegisteredParser], writer: WriterInterface) -> StompListener:
+        return cls({parser.message_type: parser.parser for parser in parsers}, writer)
 
 
 HEARTBEAT_INTERVAL_MS = 25000
@@ -110,7 +124,7 @@ class StompClient:
         self.conn.disconnect()
 
     @classmethod
-    def create(cls, hostname: str, port: int, parsers: list[RegisteredParser]) -> StompClient:
+    def create(cls, hostname: str, port: int, parsers: list[RegisteredParser], writer: WriterInterface) -> StompClient:
         return cls(
             stomp.Connection12(
                 [(hostname, port)],
@@ -123,7 +137,7 @@ class StompClient:
                 reconnect_attempts_max=60,
                 heart_beat_receive_scale=2.5,
             ),
-            StompListener.create(parsers),
+            StompListener.create(parsers, writer),
         )
 
 

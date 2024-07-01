@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
 from enum import Enum
 
 
@@ -23,3 +24,9 @@ class MessageType(str, Enum):
             return MessageType(str(type))
         except Exception:
             raise NoValidMessageTypeFound(f"{type} not found")
+
+
+class WritableMessage(ABC):
+
+    @abstractmethod
+    def to_dict(self) -> dict: ...

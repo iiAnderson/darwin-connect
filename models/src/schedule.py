@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 
+from src.common import WritableMessage
+
 
 class InvalidLocationTypeKey(Exception): ...
 
@@ -96,7 +98,7 @@ class LocationUpdates:
 
 
 @dataclass
-class ScheduleMessage:
+class ScheduleMessage(WritableMessage):
 
     locations: list[LocationUpdate]
     service: ServiceUpdate
@@ -124,3 +126,14 @@ class ScheduleMessage:
             updates.extend(LocationUpdates.create(raw_loc).updates)
 
         return cls(updates, ServiceUpdate.create(body, ts))
+
+    def to_dict(self) -> dict:
+        return {
+            "rid": self.service.rid,
+            "uid": self.service.uid,
+            "ts": self.service.ts.isoformat(),
+            "locations": [
+                {"tpl": loc.tpl, "type": str(loc.type.value), "time": loc.timestamp.strftime("%H:%M:%S")}
+                for loc in self.locations
+            ],
+        }

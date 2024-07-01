@@ -131,3 +131,25 @@ class TestScheduleMessage:
             ],
             service=ServiceUpdate("202406258080789", "P80789", ts),
         )
+
+    def test__to_dict(self) -> None:
+        ts = datetime.now()
+        msg = ScheduleMessage(
+            locations=[
+                LocationUpdate(tpl="GLGC", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 29)),
+                LocationUpdate(tpl="EKILBRD", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 23, 57)),
+                LocationUpdate(tpl="HARMYRS", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 1)),
+            ],
+            service=ServiceUpdate("202406258080789", "P80789", ts),
+        )
+
+        assert msg.to_dict() == {
+            "rid": "202406258080789",
+            "uid": "P80789",
+            "ts": ts.isoformat(),
+            "locations": [
+                {"tpl": "GLGC", "type": "ARR", "time": "00:29:00"},
+                {"tpl": "EKILBRD", "type": "DEP", "time": "23:57:00"},
+                {"tpl": "HARMYRS", "type": "ARR", "time": "00:01:00"},
+            ],
+        }

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import time
+from parser import ScheduleParser
 
 import click
 
 from clients.src.stomp import Credentials, RegisteredParser, StompClient
 from models.src.common import MessageType
-
-from .parser import ScheduleParser
+from writer import StdOutWriter
 
 
 @click.command()
@@ -19,7 +19,10 @@ def main() -> None:
 
     credentials = Credentials.parse()
     client = StompClient.create(
-        hostname=hostname, port=port, parsers=[RegisteredParser(MessageType.SC, ScheduleParser())]
+        hostname=hostname,
+        port=port,
+        parsers=[RegisteredParser(MessageType.SC, ScheduleParser())],
+        writer=StdOutWriter(),
     )
 
     client.connect(credentials.username, credentials.password, topic)

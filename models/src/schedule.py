@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 
-from src.common import WritableMessage
+from models.src.common import WritableMessage
 
 
 class InvalidLocationTypeKey(Exception): ...

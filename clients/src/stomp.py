@@ -84,7 +84,10 @@ class StompListener(stomp.ConnectionListener):
         try:
             parsed_messages = self._parsers[msg_type].parse(raw_message.body)
         except KeyError:
-            print(f"No registered parser for {msg_type}")
+            # print(f"No registered parser for {msg_type}")
+            return
+        except Exception as e:
+            print(f"Invalid message: {str(e)}")
             return
 
         for msg in parsed_messages:
@@ -153,8 +156,8 @@ class Credentials:
         try:
             username = os.environ["DARWIN_USERNAME"]
             password = os.environ["DARWIN_PASSWORD"]
-        except KeyError:
-            raise InvalidCredentials("Missing username or password")
+        except KeyError as e:
+            raise InvalidCredentials("Missing username or password") from e
 
         return cls(username, password)
 

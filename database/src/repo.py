@@ -56,7 +56,7 @@ class LocationUpdate(Base):
 
     tpl: Mapped[str] = mapped_column(String(10))
     type: Mapped[str] = mapped_column(String(10))
-    ts: Mapped[time] = mapped_column(Time())
+    time: Mapped[time] = mapped_column(Time())
 
     def __repr__(self) -> str:
         return f"Location(update_id={self.update_id!r}, tpl={self.tpl!r}, type={self.type!r}, ts={self.ts!r})"
@@ -69,7 +69,7 @@ class LocationUpdate(Base):
             service_update_id=service_update_id,
             tpl=model.tpl,
             type=model.type.value,
-            ts=model.timestamp
+            time=model.timestamp
         )
     
     def __eq__(self, obj: object) -> bool:
@@ -85,20 +85,25 @@ class DatabaseRepository(WriterInterface):
         self._session = session
 
     def write(self, msg: mod.ScheduleMessage) -> None:
+
+        print(f"Saving message for {msg.service}")
         with self._session.begin() as session:
             
             service_update = ServiceUpdate.from_model(msg.service)
             session.add(service_update)
 
+            session.flush()
+
             for loc in msg.locations:
                 session.add(LocationUpdate.from_model(loc, service_update.update_id))
 
-            session.commit()
+            session.flush()
+            print(f"Transaction committed")
 
     @classmethod
     def create(cls, password: str) -> DatabaseRepository:
         return cls(
-            engine=sessionmaker(
+            session=sessionmaker(
                 create_engine(f"postgresql://postgres:{password}@127.0.0.1:5436/postgres")
             )
         )

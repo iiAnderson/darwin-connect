@@ -10,9 +10,9 @@ packages = [ {include = "src"} ]
 python = "^3.11"
 clients = {path = "clients", develop = true}
 models = {path = "models", develop = true}
+database = {path = "database", develop = true}
 isort = "^5.13.2"
 black = "^24.4.2"
-sqlalchemy = "^2.0.31"
 
 [tool.poetry.group.dev.dependencies]
 freezegun = "^1.5.1"

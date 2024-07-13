@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import time
 from parser import ScheduleParser
 
@@ -7,7 +8,7 @@ import click
 
 from clients.src.stomp import Credentials, RegisteredParser, StompClient
 from models.src.common import MessageType
-from writer import StdOutWriter
+from database.src.repo import DatabaseRepository
 
 
 @click.command()
@@ -17,12 +18,14 @@ def main() -> None:
     port = 61613
     topic = "/topic/darwin.pushport-v16"
 
+    DB_PASSWORD = os.environ['DB_PASSWORD']
+
     credentials = Credentials.parse()
     client = StompClient.create(
         hostname=hostname,
         port=port,
         parsers=[RegisteredParser(MessageType.SC, ScheduleParser())],
-        writer=StdOutWriter(),
+        writer=DatabaseRepository.create(DB_PASSWORD),
     )
 
     client.connect(credentials.username, credentials.password, topic)

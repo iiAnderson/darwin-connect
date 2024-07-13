@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "darwin-connect"
+name = "database"
 version = "0.1.0"
 description = ""
 authors = ["Robbie Anderson <ra12g14@gmail.com>"]
@@ -13,6 +13,7 @@ models = {path = "../models", develop = true}
 isort = "^5.13.2"
 black = "^24.4.2"
 sqlalchemy = "^2.0.31"
+psycopg2-binary = "^2.9.9"
 
 [tool.poetry.group.dev.dependencies]
 freezegun = "^1.5.1"

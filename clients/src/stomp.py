@@ -93,7 +93,7 @@ class StompListener(stomp.ConnectionListener):
             return
 
         for msg in parsed_messages:
-            self._writer.write(msg.to_dict())
+            self._writer.write(msg)
 
     @classmethod
     def create(cls, parsers: list[RegisteredParser], writer: WriterInterface) -> StompListener:

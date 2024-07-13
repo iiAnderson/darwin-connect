@@ -1,15 +1,13 @@
 
 
 from datetime import datetime
-from unittest.mock import Mock, call
+from unittest.mock import Mock
 from unittest import mock
 
 from freezegun import freeze_time
 
-import models.src.schedule as models
-
-
-from src.repo import DatabaseRepository, LocationUpdate, ServiceUpdate
+import models.src.schedule as mod
+from database.src.repo import DatabaseRepository, LocationUpdate, ServiceUpdate
 
 
 class TestDatabaseRepository:
@@ -26,13 +24,13 @@ class TestDatabaseRepository:
 
         repo = DatabaseRepository(mock_session)
 
-        msg = models.ScheduleMessage(
+        msg = mod.ScheduleMessage(
             locations=[
-                models.LocationUpdate(tpl="GLGC", type=models.LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 29)),
-                models.LocationUpdate(tpl="EKILBRD", type=models.LocationType.DEP, timestamp=datetime(1900, 1, 1, 23, 57)),
-                models.LocationUpdate(tpl="HARMYRS", type=models.LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 1)),
+                mod.LocationUpdate(tpl="GLGC", type=mod.LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 29)),
+                mod.LocationUpdate(tpl="EKILBRD", type=mod.LocationType.DEP, timestamp=datetime(1900, 1, 1, 23, 57)),
+                mod.LocationUpdate(tpl="HARMYRS", type=mod.LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 1)),
             ],
-            service=models.ServiceUpdate("202406258080789", "P80789", datetime.now(), False),
+            service=mod.ServiceUpdate("202406258080789", "P80789", datetime.now(), False),
         )
 
         repo.write(msg)

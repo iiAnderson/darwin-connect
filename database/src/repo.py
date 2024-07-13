@@ -11,7 +11,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from clients.src.stomp import WriterInterface
 from sqlalchemy.orm import sessionmaker, Session
 
-import models.src.schedule as models
+import models.src.schedule as mod
 
 class Base(DeclarativeBase):
     pass
@@ -30,7 +30,7 @@ class ServiceUpdate(Base):
         return f"ServiceUpdate(update_id={self.update_id!r}, rid={self.rid!r}, ts={self.ts!r})"
     
     @classmethod
-    def from_model(cls, model: models.ServiceUpdate) -> ServiceUpdate:
+    def from_model(cls, model: mod.ServiceUpdate) -> ServiceUpdate:
 
         return cls(
             update_id= str(uuid.uuid4()),
@@ -62,7 +62,7 @@ class LocationUpdate(Base):
         return f"Location(update_id={self.update_id!r}, tpl={self.tpl!r}, type={self.type!r}, ts={self.ts!r})"
 
     @classmethod
-    def from_model(cls, model: models.LocationUpdate, service_update_id: str) -> LocationUpdate:
+    def from_model(cls, model: mod.LocationUpdate, service_update_id: str) -> LocationUpdate:
 
         return cls(
             update_id= str(uuid.uuid4()),
@@ -84,7 +84,7 @@ class DatabaseRepository(WriterInterface):
     def __init__(self, session: Session) -> None:
         self._session = session
 
-    def write(self, msg: models.ScheduleMessage) -> None:
+    def write(self, msg: mod.ScheduleMessage) -> None:
         with self._session.begin() as session:
             
             service_update = ServiceUpdate.from_model(msg.service)

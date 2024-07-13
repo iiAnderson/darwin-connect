@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "darwin-connect"
+version = "0.1.0"
+description = ""
+authors = ["Robbie Anderson <ra12g14@gmail.com>"]
+readme = "README.md"
+packages = [ {include = "src"} ]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+clients = {path = "../clients", develop = true}
+models = {path = "../models", develop = true}
+isort = "^5.13.2"
+black = "^24.4.2"
+sqlalchemy = "^2.0.31"
+
+[tool.poetry.group.dev.dependencies]
+freezegun = "^1.5.1"
+
+[tool.black]
+line-length = 79
+target-version = ['py310']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 79
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

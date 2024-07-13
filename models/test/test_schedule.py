@@ -1,8 +1,7 @@
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 
 import pytest
-from freezegun import freeze_time
 
 from src.schedule import (
     InvalidLocation,
@@ -42,7 +41,7 @@ class TestServiceUpdate:
         }
         ts = datetime.now()
 
-        assert ServiceUpdate.create(data, ts) == ServiceUpdate(rid="202406258080789", uid="P80789", ts=ts)
+        assert ServiceUpdate.create(data, ts) == ServiceUpdate(rid="202406258080789", uid="P80789", ts=ts, is_passenger_service=True)
 
     @pytest.mark.parametrize(
         "input,error_msg", [({"@rid": "abc"}, "Cannot extract uid from"), ({"@uid": "abc"}, "Cannot extract rid from")]
@@ -129,7 +128,7 @@ class TestScheduleMessage:
                 LocationUpdate(tpl="MRHSNJ", type=LocationType.PASS, timestamp=datetime(1900, 1, 1, 0, 24, 30)),
                 LocationUpdate(tpl="GLGCBSJ", type=LocationType.PASS, timestamp=datetime(1900, 1, 1, 0, 27)),
             ],
-            service=ServiceUpdate("202406258080789", "P80789", ts),
+            service=ServiceUpdate("202406258080789", "P80789", ts, True),
         )
 
     def test__to_dict(self) -> None:
@@ -140,16 +139,17 @@ class TestScheduleMessage:
                 LocationUpdate(tpl="EKILBRD", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 23, 57)),
                 LocationUpdate(tpl="HARMYRS", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 1)),
             ],
-            service=ServiceUpdate("202406258080789", "P80789", ts),
+            service=ServiceUpdate("202406258080789", "P80789", ts, False),
         )
 
         assert msg.to_dict() == {
             "rid": "202406258080789",
             "uid": "P80789",
             "ts": ts.isoformat(),
+            "passenger": False,
             "locations": [
-                {"tpl": "GLGC", "type": "ARR", "time": "00:29:00"},
-                {"tpl": "EKILBRD", "type": "DEP", "time": "23:57:00"},
                 {"tpl": "HARMYRS", "type": "ARR", "time": "00:01:00"},
+                {"tpl": "GLGC", "type": "ARR", "time": "00:29:00"},
+                {"tpl": "EKILBRD", "type": "DEP", "time": "23:57:00"}
             ],
         }

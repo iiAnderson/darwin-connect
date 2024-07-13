@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 
-from models.src.common import WritableMessage
+from src.common import WritableMessage
 
 
 class InvalidLocationTypeKey(Exception): ...
@@ -41,6 +41,14 @@ class ServiceUpdate:
     rid: str
     uid: str
     ts: datetime
+    is_passenger_service: bool
+
+    @classmethod
+    def get_passenger_status(cls, data: dict) -> bool:
+       
+        is_pass =  data.get("@isPassengerSvc", "true")
+
+        return True if is_pass == "true" else False
 
     @classmethod
     def create(cls, body: dict, ts: datetime) -> ServiceUpdate:
@@ -54,8 +62,10 @@ class ServiceUpdate:
             uid = body["@uid"]
         except KeyError as exception:
             raise InvalidServiceUpdate(f"Cannot extract uid from {body}") from exception
+        
+        is_passenger_service = cls.get_passenger_status(body)
 
-        return cls(rid, uid, ts)
+        return cls(rid, uid, ts, is_passenger_service)
 
 
 @dataclass
@@ -132,8 +142,12 @@ class ScheduleMessage(WritableMessage):
             "rid": self.service.rid,
             "uid": self.service.uid,
             "ts": self.service.ts.isoformat(),
-            "locations": [
-                {"tpl": loc.tpl, "type": str(loc.type.value), "time": loc.timestamp.strftime("%H:%M:%S")}
-                for loc in self.locations
-            ],
+            "passenger": self.service.is_passenger_service,
+            "locations": sorted(
+                [
+                    {"tpl": loc.tpl, "type": str(loc.type.value), "time": loc.timestamp.strftime("%H:%M:%S")}
+                    for loc in self.locations
+                ],
+                key=lambda x: x['time']
+            )
         }

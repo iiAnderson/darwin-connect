@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 
-from src.common import WritableMessage
+from models.src.common import WritableMessage
 
 
 class InvalidLocationTypeKey(Exception): ...
@@ -48,7 +48,7 @@ class ServiceUpdate:
        
         is_pass =  data.get("@isPassengerSvc", "true")
 
-        return True if is_pass == "true" else False
+        return is_pass == "true"
 
     @classmethod
     def create(cls, body: dict, ts: datetime) -> ServiceUpdate:

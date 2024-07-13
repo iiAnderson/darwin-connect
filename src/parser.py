@@ -3,13 +3,12 @@ from __future__ import annotations
 from datetime import datetime
 
 from clients.src.stomp import MessageParserInterface
-from models.src.common import WritableMessage
 from models.src.schedule import InvalidServiceUpdate, ScheduleMessage
 
 
 class ScheduleParser(MessageParserInterface):
 
-    def parse(self, raw_body: dict) -> list[WritableMessage]:
+    def parse(self, raw_body: dict) -> list[ScheduleMessage]:
 
         try:
             data = raw_body["Pport"]

@@ -9,6 +9,7 @@ import zlib
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+from models.src.schedule import ScheduleMessage
 import stomp
 import xmltodict
 from stomp.utils import Frame
@@ -32,13 +33,14 @@ RECONNECT_DELAY_SECS = 15
 class MessageParserInterface(ABC):
 
     @abstractmethod
-    def parse(self, data: dict) -> list[WritableMessage]: ...
+    def parse(self, data: dict) -> list[ScheduleMessage]: ...
 
 
 class WriterInterface(ABC):
 
     @abstractmethod
-    def write(self, msg: dict) -> None: ...
+    def write(self, msg: ScheduleMessage) -> None:
+        ...
 
 
 @dataclass

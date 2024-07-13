@@ -55,6 +55,7 @@ class TestScheduleParser:
                     "202406258080789",
                     "P80789",
                     datetime(2024, 6, 25, 20, 37, 0, 11244, tzinfo=timezone(timedelta(seconds=3600))),
+                    True
                 ),
             ),
             ScheduleMessage(
@@ -74,6 +75,7 @@ class TestScheduleParser:
                     rid="202406268083879",
                     uid="P83879",
                     ts=datetime(2024, 6, 25, 20, 37, 0, 11244, tzinfo=timezone(timedelta(seconds=3600))),
+                    is_passenger_service=False
                 ),
             ),
         ]

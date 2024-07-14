@@ -56,10 +56,11 @@ class LocationUpdate(Base):
 
     tpl: Mapped[str] = mapped_column(String(10))
     type: Mapped[str] = mapped_column(String(10))
+    time_type: Mapped[str] = mapped_column(String(10))
     time: Mapped[time] = mapped_column(Time())
 
     def __repr__(self) -> str:
-        return f"Location(update_id={self.update_id!r}, tpl={self.tpl!r}, type={self.type!r}, ts={self.ts!r})"
+        return f"Location(update_id={self.update_id!r}, tpl={self.tpl!r}, type={self.type!r}, time_type={self.time_type!r} ts={self.ts!r})"
 
     @classmethod
     def from_model(cls, model: mod.LocationUpdate, service_update_id: str) -> LocationUpdate:
@@ -69,6 +70,7 @@ class LocationUpdate(Base):
             service_update_id=service_update_id,
             tpl=model.tpl,
             type=model.type.value,
+            time_type=model.time_type.value,
             time=model.timestamp
         )
     

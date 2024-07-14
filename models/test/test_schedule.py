@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pytest
 
-from src.schedule import (
+from models.src.schedule import (
     InvalidLocation,
     InvalidLocationTypeKey,
     InvalidServiceUpdate,
@@ -12,6 +12,7 @@ from src.schedule import (
     LocationUpdates,
     ScheduleMessage,
     ServiceUpdate,
+    TimeType,
 )
 
 
@@ -60,13 +61,13 @@ class TestLocationUpdates:
         [
             (
                 {"@wtd": "23:57", "@tpl": "EKILBRD", "@act": "TB", "@ptd": "23:57"},
-                [LocationUpdate("EKILBRD", LocationType.DEP, datetime(1900, 1, 1, hour=23, minute=57))],
+                [LocationUpdate("EKILBRD", LocationType.DEP, TimeType.SCHEDULED, datetime(1900, 1, 1, hour=23, minute=57))],
             ),
             (
                 {"@wta": "00:04", "@wtd": "00:04:30", "@tpl": "THAL", "@act": "T ", "@pta": "00:04", "@ptd": "00:04"},
                 [
-                    LocationUpdate("THAL", LocationType.ARR, datetime(1900, 1, 1, hour=0, minute=4)),
-                    LocationUpdate("THAL", LocationType.DEP, datetime(1900, 1, 1, hour=0, minute=4, second=30)),
+                    LocationUpdate("THAL", LocationType.ARR, TimeType.SCHEDULED ,datetime(1900, 1, 1, hour=0, minute=4)),
+                    LocationUpdate("THAL", LocationType.DEP, TimeType.SCHEDULED ,datetime(1900, 1, 1, hour=0, minute=4, second=30)),
                 ],
             ),
         ],
@@ -104,29 +105,29 @@ class TestScheduleMessage:
 
         assert msg == ScheduleMessage(
             locations=[
-                LocationUpdate(tpl="GLGC", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 29)),
-                LocationUpdate(tpl="EKILBRD", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 23, 57)),
-                LocationUpdate(tpl="HARMYRS", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 1)),
-                LocationUpdate(tpl="HARMYRS", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 0, 2)),
-                LocationUpdate(tpl="THAL", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 4)),
-                LocationUpdate(tpl="THAL", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 0, 4, 30)),
-                LocationUpdate(tpl="BUSBY", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 7)),
-                LocationUpdate(tpl="BUSBY", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 0, 7, 30)),
-                LocationUpdate(tpl="CLRKSTN", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 9, 30)),
-                LocationUpdate(tpl="CLRKSTN", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 0, 10, 30)),
-                LocationUpdate(tpl="GIFNOCK", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 13)),
-                LocationUpdate(tpl="GIFNOCK", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 0, 14)),
-                LocationUpdate(tpl="THLB", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 16)),
-                LocationUpdate(tpl="THLB", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 0, 16, 30)),
-                LocationUpdate(tpl="PLKSHWW", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 19)),
-                LocationUpdate(tpl="PLKSHWW", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 0, 19, 30)),
-                LocationUpdate(tpl="CRSMYLF", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 21, 30)),
-                LocationUpdate(tpl="CRSMYLF", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 0, 22, 30)),
-                LocationUpdate(tpl="HARMYRL", type=LocationType.PASS, timestamp=datetime(1900, 1, 1, 23, 59, 30)),
-                LocationUpdate(tpl="BUSBYJ", type=LocationType.PASS, timestamp=datetime(1900, 1, 1, 0, 18)),
-                LocationUpdate(tpl="MRHSSJ", type=LocationType.PASS, timestamp=datetime(1900, 1, 1, 0, 24)),
-                LocationUpdate(tpl="MRHSNJ", type=LocationType.PASS, timestamp=datetime(1900, 1, 1, 0, 24, 30)),
-                LocationUpdate(tpl="GLGCBSJ", type=LocationType.PASS, timestamp=datetime(1900, 1, 1, 0, 27)),
+                LocationUpdate(tpl="GLGC", type=LocationType.ARR, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 29)),
+                LocationUpdate(tpl="EKILBRD", type=LocationType.DEP, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 23, 57)),
+                LocationUpdate(tpl="HARMYRS", type=LocationType.ARR, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 1)),
+                LocationUpdate(tpl="HARMYRS", type=LocationType.DEP, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 2)),
+                LocationUpdate(tpl="THAL", type=LocationType.ARR, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 4)),
+                LocationUpdate(tpl="THAL", type=LocationType.DEP, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 4, 30)),
+                LocationUpdate(tpl="BUSBY", type=LocationType.ARR, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 7)),
+                LocationUpdate(tpl="BUSBY", type=LocationType.DEP, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 7, 30)),
+                LocationUpdate(tpl="CLRKSTN", type=LocationType.ARR, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 9, 30)),
+                LocationUpdate(tpl="CLRKSTN", type=LocationType.DEP, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 10, 30)),
+                LocationUpdate(tpl="GIFNOCK", type=LocationType.ARR, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 13)),
+                LocationUpdate(tpl="GIFNOCK", type=LocationType.DEP, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 14)),
+                LocationUpdate(tpl="THLB", type=LocationType.ARR, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 16)),
+                LocationUpdate(tpl="THLB", type=LocationType.DEP, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 16, 30)),
+                LocationUpdate(tpl="PLKSHWW", type=LocationType.ARR, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 19)),
+                LocationUpdate(tpl="PLKSHWW", type=LocationType.DEP, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 19, 30)),
+                LocationUpdate(tpl="CRSMYLF", type=LocationType.ARR, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 21, 30)),
+                LocationUpdate(tpl="CRSMYLF", type=LocationType.DEP, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 22, 30)),
+                LocationUpdate(tpl="HARMYRL", type=LocationType.PASS, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 23, 59, 30)),
+                LocationUpdate(tpl="BUSBYJ", type=LocationType.PASS, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 18)),
+                LocationUpdate(tpl="MRHSSJ", type=LocationType.PASS, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 24)),
+                LocationUpdate(tpl="MRHSNJ", type=LocationType.PASS, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 24, 30)),
+                LocationUpdate(tpl="GLGCBSJ", type=LocationType.PASS, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 27)),
             ],
             service=ServiceUpdate("202406258080789", "P80789", ts, True),
         )
@@ -135,9 +136,9 @@ class TestScheduleMessage:
         ts = datetime.now()
         msg = ScheduleMessage(
             locations=[
-                LocationUpdate(tpl="GLGC", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 29)),
-                LocationUpdate(tpl="EKILBRD", type=LocationType.DEP, timestamp=datetime(1900, 1, 1, 23, 57)),
-                LocationUpdate(tpl="HARMYRS", type=LocationType.ARR, timestamp=datetime(1900, 1, 1, 0, 1)),
+                LocationUpdate(tpl="GLGC", type=LocationType.ARR, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 29)),
+                LocationUpdate(tpl="EKILBRD", type=LocationType.DEP, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 23, 57)),
+                LocationUpdate(tpl="HARMYRS", type=LocationType.ARR, time_type=TimeType.SCHEDULED, timestamp=datetime(1900, 1, 1, 0, 1)),
             ],
             service=ServiceUpdate("202406258080789", "P80789", ts, False),
         )

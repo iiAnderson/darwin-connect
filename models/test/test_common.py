@@ -1,5 +1,5 @@
 import pytest
-from src.common import MessageType, NoValidMessageTypeFound
+from models.src.common import MessageType, NoValidMessageTypeFound
 
 
 class TestMessageType:

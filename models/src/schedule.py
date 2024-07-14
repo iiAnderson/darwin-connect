@@ -34,6 +34,12 @@ class LocationType(Enum):
         else:
             raise InvalidLocationTypeKey(f"{key} not recognised")
 
+class TimeType(Enum):
+
+    ESTIMATED = "EST"
+    ACTUAL = "ACT"
+    SCHEDULED = "SCHED"
+
 
 @dataclass
 class ServiceUpdate:
@@ -73,6 +79,7 @@ class LocationUpdate:
 
     tpl: str
     type: LocationType
+    time_type: TimeType
     timestamp: datetime
 
 
@@ -97,7 +104,7 @@ class LocationUpdates:
                 location_type = LocationType.create(key)
                 raw_ts = value if len(value.split(":")) == 3 else f"{value}:00"
 
-                updates.append(LocationUpdate(tpl, location_type, datetime.strptime(raw_ts, "%H:%M:%S")))
+                updates.append(LocationUpdate(tpl, location_type, TimeType.SCHEDULED, datetime.strptime(raw_ts, "%H:%M:%S")))
             except InvalidLocationTypeKey:
                 continue
 

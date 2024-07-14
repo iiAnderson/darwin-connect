@@ -2,12 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
 
-from models.src.common import WritableMessage
+from models.src.common import InvalidLocationTypeKey, LocationType, LocationUpdate, ServiceUpdate, TimeType, WritableMessage
 
-
-class InvalidLocationTypeKey(Exception): ...
 
 
 class InvalidLocation(Exception): ...
@@ -16,38 +13,7 @@ class InvalidLocation(Exception): ...
 class InvalidServiceUpdate(Exception): ...
 
 
-class LocationType(Enum):
-
-    ARR = "ARR"
-    DEP = "DEP"
-    PASS = "PASS"
-
-    @classmethod
-    def create(cls, key: str) -> LocationType:
-
-        if key == "@wta":
-            return LocationType.ARR
-        elif key == "@wtd":
-            return LocationType.DEP
-        elif key == "@wtp":
-            return LocationType.PASS
-        else:
-            raise InvalidLocationTypeKey(f"{key} not recognised")
-
-class TimeType(Enum):
-
-    ESTIMATED = "EST"
-    ACTUAL = "ACT"
-    SCHEDULED = "SCHED"
-
-
-@dataclass
-class ServiceUpdate:
-
-    rid: str
-    uid: str
-    ts: datetime
-    is_passenger_service: bool
+class ServiceParser:
 
     @classmethod
     def get_passenger_status(cls, data: dict) -> bool:
@@ -57,7 +23,7 @@ class ServiceUpdate:
         return is_pass == "true"
 
     @classmethod
-    def create(cls, body: dict, ts: datetime) -> ServiceUpdate:
+    def parse(cls, body: dict, ts: datetime) -> ServiceUpdate:
 
         try:
             rid = body["@rid"]
@@ -71,25 +37,14 @@ class ServiceUpdate:
         
         is_passenger_service = cls.get_passenger_status(body)
 
-        return cls(rid, uid, ts, is_passenger_service)
+        return ServiceUpdate(rid, uid, ts, is_passenger_service)
 
 
 @dataclass
-class LocationUpdate:
-
-    tpl: str
-    type: LocationType
-    time_type: TimeType
-    timestamp: datetime
-
-
-@dataclass
-class LocationUpdates:
-
-    updates: list[LocationUpdate]
+class LocationsParser:
 
     @classmethod
-    def create(cls, body: dict) -> LocationUpdates:
+    def parse(cls, body: dict) -> list[LocationUpdate]:
 
         try:
             tpl = body["@tpl"]
@@ -111,7 +66,7 @@ class LocationUpdates:
         if not updates:
             raise InvalidLocation(f"No LocationUpdates could be parsed from {body}")
 
-        return cls(updates)
+        return updates
 
 
 @dataclass
@@ -119,6 +74,12 @@ class ScheduleMessage(WritableMessage):
 
     locations: list[LocationUpdate]
     service: ServiceUpdate
+
+    def get_locations(self) -> list[LocationUpdate]:
+        return self.locations
+    
+    def get_service(self) -> ServiceUpdate:
+        return self.service
 
     @classmethod
     def _get_list(cls, key: str, body: dict) -> list[dict]:
@@ -140,9 +101,9 @@ class ScheduleMessage(WritableMessage):
         raw_locs.extend(cls._get_list("ns2:PP", body))
 
         for raw_loc in raw_locs:
-            updates.extend(LocationUpdates.create(raw_loc).updates)
+            updates.extend(LocationsParser.parse(raw_loc))
 
-        return cls(updates, ServiceUpdate.create(body, ts))
+        return cls(updates, ServiceParser.parse(body, ts))
 
     def to_dict(self) -> dict:
         return {

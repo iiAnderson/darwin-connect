@@ -5,34 +5,17 @@ import pytest
 
 from models.src.schedule import (
     InvalidLocation,
-    InvalidLocationTypeKey,
     InvalidServiceUpdate,
     LocationType,
     LocationUpdate,
-    LocationUpdates,
+    LocationsParser,
     ScheduleMessage,
+    ServiceParser,
     ServiceUpdate,
     TimeType,
 )
 
-
-class TestLocationType:
-
-    @pytest.mark.parametrize(
-        "input,expected", [("@wta", LocationType.ARR), ("@wtp", LocationType.PASS), ("@wtd", LocationType.DEP)]
-    )
-    def test(self, input: str, expected: LocationType) -> None:
-
-        assert LocationType.create(input) == expected
-
-    @pytest.mark.parametrize("input", ["@act", "", None])
-    def test__invalid_key(self, input: str) -> None:
-
-        with pytest.raises(InvalidLocationTypeKey):
-            LocationType.create(input)
-
-
-class TestServiceUpdate:
+class TestServiceParser:
 
     def test(self) -> None:
 
@@ -42,7 +25,7 @@ class TestServiceUpdate:
         }
         ts = datetime.now()
 
-        assert ServiceUpdate.create(data, ts) == ServiceUpdate(rid="202406258080789", uid="P80789", ts=ts, is_passenger_service=True)
+        assert ServiceParser.parse(data, ts) == ServiceUpdate(rid="202406258080789", uid="P80789", ts=ts, is_passenger_service=True)
 
     @pytest.mark.parametrize(
         "input,error_msg", [({"@rid": "abc"}, "Cannot extract uid from"), ({"@uid": "abc"}, "Cannot extract rid from")]
@@ -51,10 +34,10 @@ class TestServiceUpdate:
         ts = datetime.now()
 
         with pytest.raises(InvalidServiceUpdate, match=error_msg):
-            ServiceUpdate.create(input, ts)
+            ServiceParser.parse(input, ts)
 
 
-class TestLocationUpdates:
+class TestLocationsParser:
 
     @pytest.mark.parametrize(
         "input,expected",
@@ -74,23 +57,23 @@ class TestLocationUpdates:
     )
     def test(self, input: dict, expected: list[LocationUpdate]) -> None:
 
-        update = LocationUpdates.create(input)
+        update = LocationsParser.parse(input)
 
-        assert update == LocationUpdates(updates=expected)
+        assert update == expected
 
     def test__invalid_location_key(self) -> None:
 
         data = {"@tpl": "THAL", "@act": "T ", "@pta": "00:04", "@ptd": "00:04"}
 
         with pytest.raises(InvalidLocation):
-            LocationUpdates.create(data)
+            LocationsParser.parse(data)
 
     def test__no_tpl(self) -> None:
 
         data = {"@act": "T ", "@pta": "00:04", "@ptd": "00:04"}
 
         with pytest.raises(InvalidLocation, match="No @tpl found on"):
-            LocationUpdates.create(data)
+            LocationsParser.parse(data)
 
 
 class TestScheduleMessage:

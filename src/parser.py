@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from src.ts import TSMessage
-
 from clients.src.stomp import MessageParserInterface
+from models.src.common import WritableMessage
 from models.src.schedule import InvalidServiceUpdate, ScheduleMessage
+from models.src.ts import TSMessage
 
 
 class ScheduleParser(MessageParserInterface):
 
-    def parse(self, raw_body: dict) -> list[ScheduleMessage]:
+    def parse(self, raw_body: dict) -> list[WritableMessage]:
 
         try:
             data = raw_body["Pport"]
@@ -41,9 +41,10 @@ class ScheduleParser(MessageParserInterface):
 
         return messages
 
+
 class TSParser(MessageParserInterface):
 
-    def parse(self, raw_body: dict) -> list[ScheduleMessage]:
+    def parse(self, raw_body: dict) -> list[WritableMessage]:
 
         try:
             data = raw_body["Pport"]

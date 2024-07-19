@@ -1,17 +1,29 @@
 from __future__ import annotations
 
-from datetime import datetime, time
 import uuid
-from sqlalchemy import ForeignKey, create_engine
-from sqlalchemy import String, DateTime, Boolean, Time
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.dialects.postgresql import UUID
-from clients.src.stomp import WriterInterface
-from sqlalchemy.orm import sessionmaker, Session
+from datetime import datetime
+from datetime import time as dt_time
 
-import models.src.schedule as mod
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    ForeignKey,
+    String,
+    Time,
+    create_engine,
+)
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    Mapped,
+    Session,
+    mapped_column,
+    sessionmaker,
+)
+
+import models.src.common as mod
+from clients.src.stomp import WriterInterface
+
 
 class Base(DeclarativeBase):
     pass
@@ -28,23 +40,19 @@ class ServiceUpdate(Base):
 
     def __repr__(self) -> str:
         return f"ServiceUpdate(update_id={self.update_id!r}, rid={self.rid!r}, ts={self.ts!r})"
-    
+
     @classmethod
     def from_model(cls, model: mod.ServiceUpdate) -> ServiceUpdate:
 
         return cls(
-            update_id= str(uuid.uuid4()),
-            rid=model.rid,
-            uid=model.uid,
-            ts=model.ts,
-            passenger=model.is_passenger_service
+            update_id=str(uuid.uuid4()), rid=model.rid, uid=model.uid, ts=model.ts, passenger=model.is_passenger_service
         )
-    
+
     def __eq__(self, obj: object) -> bool:
 
         if type(obj) is not ServiceUpdate:
             return False
-        
+
         return True
 
 
@@ -57,7 +65,7 @@ class LocationUpdate(Base):
     tpl: Mapped[str] = mapped_column(String(10))
     type: Mapped[str] = mapped_column(String(10))
     time_type: Mapped[str] = mapped_column(String(10))
-    time: Mapped[time] = mapped_column(Time())
+    time: Mapped[dt_time] = mapped_column(Time())
 
     def __repr__(self) -> str:
         return f"Location(update_id={self.update_id!r}, tpl={self.tpl!r}, type={self.type!r}, time_type={self.time_type!r} ts={self.ts!r})"
@@ -66,31 +74,32 @@ class LocationUpdate(Base):
     def from_model(cls, model: mod.LocationUpdate, service_update_id: str) -> LocationUpdate:
 
         return cls(
-            update_id= str(uuid.uuid4()),
+            update_id=str(uuid.uuid4()),
             service_update_id=service_update_id,
             tpl=model.tpl,
             type=model.type.value,
             time_type=model.time_type.value,
-            time=model.timestamp
+            time=model.timestamp,
         )
-    
+
     def __eq__(self, obj: object) -> bool:
 
         if type(obj) is not ServiceUpdate:
             return False
-        
+
         return True
+
 
 class DatabaseRepository(WriterInterface):
 
     def __init__(self, session: Session) -> None:
         self._session = session
 
-    def write(self, msg: mod.ScheduleMessage) -> None:
+    def write(self, msg: mod.WritableMessage) -> None:
 
         print(f"Saving message for {msg.service}")
         with self._session.begin() as session:
-            
+
             service_update = ServiceUpdate.from_model(msg.service)
             session.add(service_update)
 
@@ -100,12 +109,8 @@ class DatabaseRepository(WriterInterface):
                 session.add(LocationUpdate.from_model(loc, service_update.update_id))
 
             session.flush()
-            print(f"Transaction committed")
+            print("Transaction committed")
 
     @classmethod
     def create(cls, password: str) -> DatabaseRepository:
-        return cls(
-            session=sessionmaker(
-                create_engine(f"postgresql://postgres:{password}@127.0.0.1:5436/postgres")
-            )
-        )
+        return cls(session=sessionmaker(create_engine(f"postgresql://postgres:{password}@127.0.0.1:5436/postgres")))

@@ -1,0 +1,278 @@
+{
+    "@updateOrigin": "Darwin",
+    "TS": {
+        "@rid": "202407188098087",
+        "@uid": "P98087",
+        "@ssd": "2024-07-18",
+        "ns5:Location": [
+            {
+                "@tpl": "TONBDG",
+                "@wtd": "17:03",
+                "@ptd": "17:03",
+                "ns5:dep": {
+                    "@et": "17:08",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "1"
+                }
+            },
+            {
+                "@tpl": "PKWD",
+                "@wta": "17:10",
+                "@wtd": "17:11",
+                "@pta": "17:10",
+                "@ptd": "17:11",
+                "ns5:arr": {
+                    "@et": "17:15",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:16",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "2"
+                }
+            },
+            {
+                "@tpl": "BLTRNAB",
+                "@wta": "17:14:30",
+                "@wtd": "17:15",
+                "@pta": "17:15",
+                "@ptd": "17:15",
+                "ns5:arr": {
+                    "@et": "17:20",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:20",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "2"
+                }
+            },
+            {
+                "@tpl": "YALDING",
+                "@wta": "17:18",
+                "@wtd": "17:19",
+                "@pta": "17:18",
+                "@ptd": "17:19",
+                "ns5:arr": {
+                    "@et": "17:23",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:24",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "2"
+                }
+            },
+            {
+                "@tpl": "WTRNGBY",
+                "@wta": "17:22",
+                "@wtd": "17:22:30",
+                "@pta": "17:22",
+                "@ptd": "17:22",
+                "ns5:arr": {
+                    "@et": "17:27",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:28",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "2"
+                }
+            },
+            {
+                "@tpl": "EFARLGH",
+                "@wta": "17:27",
+                "@wtd": "17:27:30",
+                "@pta": "17:27",
+                "@ptd": "17:27",
+                "ns5:arr": {
+                    "@et": "17:32",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:33",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "2"
+                }
+            },
+            {
+                "@tpl": "MSTONEW",
+                "@wta": "17:31:30",
+                "@wtd": "17:32:30",
+                "@pta": "17:32",
+                "@ptd": "17:32",
+                "ns5:arr": {
+                    "@et": "17:37",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:37",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "1"
+                }
+            },
+            {
+                "@tpl": "MSTONEB",
+                "@wta": "17:34",
+                "@wtd": "17:35",
+                "@pta": "17:34",
+                "@ptd": "17:35",
+                "ns5:arr": {
+                    "@et": "17:39",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:40",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "1"
+                }
+            },
+            {
+                "@tpl": "AYLESFD",
+                "@wta": "17:39:30",
+                "@wtd": "17:40",
+                "@pta": "17:40",
+                "@ptd": "17:40",
+                "ns5:arr": {
+                    "@et": "17:44",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:45",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "1"
+                }
+            },
+            {
+                "@tpl": "NWHYTHE",
+                "@wta": "17:42",
+                "@wtd": "17:42:30",
+                "@pta": "17:42",
+                "@ptd": "17:42",
+                "ns5:arr": {
+                    "@et": "17:47",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:47",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "1"
+                }
+            },
+            {
+                "@tpl": "SNODLND",
+                "@wta": "17:45",
+                "@wtd": "17:46",
+                "@pta": "17:45",
+                "@ptd": "17:46",
+                "ns5:arr": {
+                    "@et": "17:50",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:51",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "1"
+                }
+            },
+            {
+                "@tpl": "HALG",
+                "@wta": "17:48:30",
+                "@wtd": "17:49",
+                "@pta": "17:49",
+                "@ptd": "17:49",
+                "ns5:arr": {
+                    "@et": "17:53",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:54",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "1"
+                }
+            },
+            {
+                "@tpl": "CXTN",
+                "@wta": "17:52",
+                "@wtd": "17:52:30",
+                "@pta": "17:52",
+                "@ptd": "17:52",
+                "ns5:arr": {
+                    "@et": "17:57",
+                    "@src": "Darwin"
+                },
+                "ns5:dep": {
+                    "@et": "17:57",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "1"
+                }
+            },
+            {
+                "@tpl": "STROOD",
+                "@wta": "17:57",
+                "@pta": "17:57",
+                "ns5:arr": {
+                    "@et": "18:02",
+                    "@src": "Darwin"
+                },
+                "ns5:plat": {
+                    "@platsup": "true",
+                    "@cisPlatsup": "true",
+                    "#text": "3"
+                }
+            }
+        ]
+    }
+}

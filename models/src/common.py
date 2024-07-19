@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import Optional
 
 
 class NoValidMessageTypeFound(Exception): ...
@@ -69,7 +70,7 @@ class ServiceUpdate:
     rid: str
     uid: str
     ts: datetime
-    is_passenger_service: bool
+    is_passenger_service: Optional[bool] = None
 
 
 @dataclass

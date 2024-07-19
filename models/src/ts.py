@@ -55,7 +55,7 @@ class ArrivalParser:
         
         try:
             arr = body['ns5:arr']
-        except (KeyError):
+        except KeyError:
             return []
         
         updates = []
@@ -83,7 +83,7 @@ class DepartureParser:
         
         try:
             arr = body['ns5:dep']
-        except (KeyError):
+        except KeyError:
             return []
 
         updates = []

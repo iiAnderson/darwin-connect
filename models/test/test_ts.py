@@ -5,7 +5,7 @@ import json
 from freezegun import freeze_time
 import pytest
 from models.src.common import LocationType, LocationUpdate, ServiceUpdate, TimeType
-from models.src.ts import ArrivalParser, DepartureParser, InvalidServiceUpdate, LocationsParser, ServiceParser, TSMessage
+from models.src.ts import ArrivalParser, DepartureParser, InvalidServiceUpdate, InvalidTimeType, LocationsParser, ServiceParser, TSMessage, TimeTypeParser
 
 
 class TestServiceParser:
@@ -40,6 +40,26 @@ class TestServiceParser:
 
         with pytest.raises(InvalidServiceUpdate):
             ServiceParser.parse(input, datetime.now())
+
+
+class TestTimeTypeParser:
+
+    @pytest.mark.parametrize(
+        "input,expected",
+        [
+            ("@et", TimeType.ESTIMATED),
+            ("@at", TimeType.ACTUAL)
+        ]
+    )
+    def test(self, input: str, expected: TimeType) -> None:
+
+        assert TimeTypeParser.parse(input) == expected
+
+    def test__invalid_type(self) -> None:
+
+        with pytest.raises(InvalidTimeType):
+            TimeTypeParser.parse("@src")
+
 
 class TestArrivalParser:
 

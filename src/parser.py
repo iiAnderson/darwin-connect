@@ -60,17 +60,17 @@ class TSParser(MessageParserInterface):
         try:
             ur = data["uR"]
 
-            ts = ur["TS"]
+            msg_ts = ur["TS"]
 
-            if type(ts) is dict:
-                ts = [ts]
+            if type(msg_ts) is dict:
+                msg_ts = [msg_ts]
 
         except KeyError as exception:
             raise InvalidServiceUpdate(f"Cannot extract uR or schedule from {data}") from exception
 
         messages = []
 
-        for message in ts:
+        for message in msg_ts:
             messages.append(TSMessage.create(message, ts))
 
         return messages

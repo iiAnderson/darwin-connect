@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import os
 import time
+from parser import ScheduleParser, TSParser
 
 import click
 
 from clients.src.stomp import Credentials, RegisteredParser, StompClient
 from database.src.repo import DatabaseRepository
 from models.src.common import MessageType
-from src.parser import ScheduleParser, TSParser
 
 
 @click.command()

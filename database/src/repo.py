@@ -102,7 +102,6 @@ class DatabaseRepository(WriterInterface):
 
             service_update = ServiceUpdate.from_model(msg.service)
             session.add(service_update)
-
             session.flush()
 
             for loc in msg.locations:
@@ -113,4 +112,4 @@ class DatabaseRepository(WriterInterface):
 
     @classmethod
     def create(cls, password: str) -> DatabaseRepository:
-        return cls(session=sessionmaker(create_engine(f"postgresql://postgres:{password}@127.0.0.1:5436/postgres")))
+        return cls(session=sessionmaker(create_engine(f"postgresql://postgres:{password}@127.0.0.1:5436/postgres")))  # type: ignore

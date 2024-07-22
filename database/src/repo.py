@@ -97,15 +97,15 @@ class DatabaseRepository(WriterInterface):
 
     def write(self, msg: mod.WritableMessage) -> None:
 
-        print(f"Saving message for {msg.service}")
+        print(f"Saving message for {msg.get_service()}")
         with self._session.begin() as session:
 
-            service_update = ServiceUpdate.from_model(msg.service)
+            service_update = ServiceUpdate.from_model(msg.get_service())
             session.add(service_update)
             session.flush()
 
-            for loc in msg.locations:
-                session.add(LocationUpdate.from_model(loc, service_update.update_id))
+            for loc in msg.get_locations():
+                session.add(LocationUpdate.from_model(loc, service_update.update_id))  # type: ignore
 
             session.flush()
             print("Transaction committed")

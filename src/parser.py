@@ -54,6 +54,7 @@ class TSParser(MessageParserInterface):
 
         try:
             ts = datetime.fromisoformat(data["@ts"])
+            ts = ts.replace(tzinfo=None)
         except KeyError as exception:
             raise InvalidServiceUpdate(f"Cannot extract ts from {data}") from exception
 

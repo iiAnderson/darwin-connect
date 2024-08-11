@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 import boto3
@@ -35,6 +35,9 @@ class LocationUpdate(Dictable):
             time=model.timestamp.isoformat(),
         )
 
+    def to_dict(self) -> dict:
+        return {"tpl": self.tpl, "type": self.type, "time_type": self.time_type, "time": self.time}
+
 
 @dataclass
 class ServiceUpdate(Dictable):
@@ -46,25 +49,76 @@ class ServiceUpdate(Dictable):
 
     @classmethod
     def from_model(cls, model: mod.ServiceUpdate) -> ServiceUpdate:
-
         return cls(rid=model.rid, uid=model.uid, ts=model.ts.isoformat(), passenger=model.is_passenger_service)
+
+    def to_dict(self) -> dict:
+        return {"rid": self.rid, "uid": self.uid, "ts": self.ts, "passenger": self.passenger}
+
+
+@dataclass
+class BufferedMessage:
+
+    service: ServiceUpdate
+    locations: list[LocationUpdate]
+    size: int
+
+    @classmethod
+    def create(cls, new_service: ServiceUpdate, new_locations) -> BufferedMessage:
+
+        return cls(new_service, new_locations, len(new_locations) + 1)
+
+
+class BufferInterface(ABC):
+
+    @abstractmethod
+    def add(self, msg: BufferedMessage) -> list[BufferedMessage]: ...
+
+
+@dataclass
+class Buffer(BufferInterface):
+
+    _buffer: list[BufferedMessage] = field(default_factory=list)
+    _size: int = 0
+
+    def add(self, msg: BufferedMessage) -> list[BufferedMessage]:
+
+        self._buffer.append(msg)
+        self._size += msg.size
+
+        print(f"Buffer size: {self._size}")
+        if self._size >= 2000:
+            to_return = self._buffer
+            self._buffer = []
+            self._size = 0
+
+            return to_return
+
+        return []
 
 
 class SQSWriter(WriterInterface):
 
-    def __init__(self, sqs_client: SQSClient, queue_url: str) -> None:
+    def __init__(self, sqs_client: SQSClient, queue_url: str, buffer: BufferInterface) -> None:
         self._sqs_client = sqs_client
         self._queue_url = queue_url
+
+        self._buffer = buffer
 
     def write(self, msg: mod.WritableMessage) -> None:
 
         service = ServiceUpdate.from_model(msg.get_service())
         locations = [LocationUpdate.from_model(loc) for loc in msg.get_locations()]
 
-        data = service.to_dict()
-        data["locations"] = [loc.to_dict() for loc in locations]
+        to_write = self._buffer.add(BufferedMessage.create(service, locations))
 
-        self._sqs_client.send_message(QueueUrl=self._queue_url, MessageBody=json.dumps(data))
+        print(f"Writing {len(to_write)} buffered messages")
+
+        for msg_to_write in to_write:
+
+            data = msg_to_write.service.to_dict()
+            data["locations"] = [loc.to_dict() for loc in msg_to_write.locations]
+
+            self._sqs_client.send_message(QueueUrl=self._queue_url, MessageBody=json.dumps(data))
 
     @classmethod
     def create(cls, queue_url: str) -> SQSWriter:

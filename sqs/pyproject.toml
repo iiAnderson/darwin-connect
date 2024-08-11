@@ -8,13 +8,15 @@ packages = [ {include = "src"} ]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+models = {path = "../models", develop = true}
+clients = {path = "../clients", develop = true}
 mypy-boto3-sqs = "^1.34.121"
 boto3 = "^1.34.156"
-models = {path = "../models", develop = true}
 
 [tool.poetry.group.dev.dependencies]
 moto = "^5.0.12"
 pytest = "^8.3.2"
+freezegun = "^1.5.1"
 
 [build-system]
 requires = ["poetry-core"]

@@ -22,6 +22,12 @@ class MockBuffer(BufferInterface):
         return [msg]
 
 
+class BlankBuffer(BufferInterface):
+
+    def add(self, _: BufferedMessage) -> list[BufferedMessage]:
+        return []
+
+
 class TestSQSWriter:
 
     @freeze_time("2024-08-11")
@@ -61,11 +67,51 @@ class TestSQSWriter:
 
         writer.write(msg)
         resp = sqs.receive_message(QueueUrl=url, AttributeNames=["All"], MaxNumberOfMessages=10)
-
         assert (
             resp["Messages"][0]["Body"]
-            == '{"rid": "202406258080789", "uid": "P80789", "ts": "2024-08-11T00:00:00", "passenger": false, "locations": [{"tpl": "GLGC", "type": "ARR", "time_type": "SCHED", "time": "1900-01-01T00:29:00"}, {"tpl": "EKILBRD", "type": "DEP", "time_type": "SCHED", "time": "1900-01-01T23:57:00"}, {"tpl": "HARMYRS", "type": "ARR", "time_type": "SCHED", "time": "1900-01-01T00:01:00"}]}'
+            == '[{"rid": "202406258080789", "uid": "P80789", "ts": "2024-08-11T00:00:00", "passenger": false, "locations": [{"tpl": "GLGC", "type": "ARR", "time_type": "SCHED", "time": "1900-01-01T00:29:00"}, {"tpl": "EKILBRD", "type": "DEP", "time_type": "SCHED", "time": "1900-01-01T23:57:00"}, {"tpl": "HARMYRS", "type": "ARR", "time_type": "SCHED", "time": "1900-01-01T00:01:00"}]}]'
         )
+
+    @freeze_time("2024-08-11")
+    @mock_aws
+    def test__no_write_if_buffered(self) -> None:
+
+        msg = ScheduleMessage(
+            locations=[
+                mod.LocationUpdate(
+                    tpl="GLGC",
+                    type=mod.LocationType.ARR,
+                    time_type=mod.TimeType.SCHEDULED,
+                    timestamp=datetime(1900, 1, 1, 0, 29),
+                ),
+                mod.LocationUpdate(
+                    tpl="EKILBRD",
+                    type=mod.LocationType.DEP,
+                    time_type=mod.TimeType.SCHEDULED,
+                    timestamp=datetime(1900, 1, 1, 23, 57),
+                ),
+                mod.LocationUpdate(
+                    tpl="HARMYRS",
+                    type=mod.LocationType.ARR,
+                    time_type=mod.TimeType.SCHEDULED,
+                    timestamp=datetime(1900, 1, 1, 0, 1),
+                ),
+            ],
+            service=mod.ServiceUpdate("202406258080789", "P80789", datetime.utcnow(), False),
+        )
+
+        sqs = boto3.client("sqs")
+
+        response = sqs.create_queue(QueueName="test")
+        url = response["QueueUrl"]
+
+        writer = SQSWriter(sqs, url, BlankBuffer())
+
+        writer.write(msg)
+        resp = sqs.receive_message(QueueUrl=url, AttributeNames=["All"], MaxNumberOfMessages=10)
+        print(resp)
+
+        assert "Messages" not in resp
 
 
 class TestBuffer:

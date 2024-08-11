@@ -113,13 +113,19 @@ class SQSWriter(WriterInterface):
 
         print(f"Writing {len(to_write)} buffered messages")
 
+        msgs = []
+
         for msg_to_write in to_write:
 
             data = msg_to_write.service.to_dict()
             data["locations"] = [loc.to_dict() for loc in msg_to_write.locations]
 
-            self._sqs_client.send_message(QueueUrl=self._queue_url, MessageBody=json.dumps(data))
+            msgs.append(data)
+
+        if msgs:
+            print(f"Packaged {len(msgs)}")
+            self._sqs_client.send_message(QueueUrl=self._queue_url, MessageBody=json.dumps(msgs))
 
     @classmethod
     def create(cls, queue_url: str) -> SQSWriter:
-        return cls(boto3.client("sqs"), queue_url)
+        return cls(boto3.client("sqs"), queue_url, Buffer())

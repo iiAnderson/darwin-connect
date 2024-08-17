@@ -32,7 +32,7 @@ class LocationUpdate(Dictable):
             tpl=model.tpl,
             type=model.type.value,
             time_type=model.time_type.value,
-            time=model.timestamp.isoformat(),
+            time=model.timestamp.strftime("%H:%M:%S"),
         )
 
     def to_dict(self) -> dict:

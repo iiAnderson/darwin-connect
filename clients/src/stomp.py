@@ -156,6 +156,8 @@ class Credentials:
         try:
             username = os.environ["DARWIN_USERNAME"]
             password = os.environ["DARWIN_PASSWORD"]
+
+            print(f"Parsed username {username}")
         except KeyError as e:
             raise InvalidCredentials("Missing username or password") from e
 

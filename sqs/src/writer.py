@@ -110,9 +110,6 @@ class SQSWriter(WriterInterface):
         locations = [LocationUpdate.from_model(loc) for loc in msg.get_locations()]
 
         to_write = self._buffer.add(BufferedMessage.create(service, locations))
-
-        print(f"Writing {len(to_write)} buffered messages")
-
         msgs = []
 
         for msg_to_write in to_write:
@@ -123,7 +120,8 @@ class SQSWriter(WriterInterface):
             msgs.append(data)
 
         if msgs:
-            print(f"Packaged {len(msgs)}")
+            print("---------")
+            print(f"Flushing {len(msgs)} messages to queue")
             self._sqs_client.send_message(QueueUrl=self._queue_url, MessageBody=json.dumps(msgs))
 
     @classmethod

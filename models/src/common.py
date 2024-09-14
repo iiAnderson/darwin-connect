@@ -71,6 +71,7 @@ class ServiceUpdate:
     uid: str
     ts: datetime
     is_passenger_service: Optional[bool] = None
+    toc: Optional[str] = None
 
 
 @dataclass

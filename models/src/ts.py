@@ -39,7 +39,12 @@ class ServiceParser:
         except KeyError as exception:
             raise InvalidServiceUpdate(f"Cannot extract uid from {body}") from exception
 
-        return ServiceUpdate(rid, uid, ts)
+        try:
+            toc = body.get("@toc")
+        except KeyError as exception:
+            raise InvalidServiceUpdate(f"Cannot extract toc from {body}") from exception
+
+        return ServiceUpdate(rid, uid, ts, toc=toc)
 
 
 class TimeTypeParser:
@@ -161,6 +166,7 @@ class TSMessage(WritableMessage):
             "rid": self.service.rid,
             "uid": self.service.uid,
             "ts": self.service.ts.isoformat(),
+            "toc": "",
             "passenger": self.service.is_passenger_service,
             "locations": sorted(
                 [

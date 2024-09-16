@@ -6,7 +6,12 @@ from parser import ScheduleParser, TSParser
 
 import click
 
-from clients.src.stomp import Credentials, RegisteredParser, StompClient
+from clients.src.stomp import (
+    Credentials,
+    DefaultMessageHandler,
+    RegisteredParser,
+    StompClient,
+)
 from database.src.repo import DatabaseRepository
 from models.src.common import MessageType
 from sqs.src.writer import SQSWriter
@@ -22,11 +27,15 @@ def main() -> None:
     SQS_URL = os.environ.get("SQS_URL")
 
     credentials = Credentials.parse()
+
+    message_handler = DefaultMessageHandler(
+        parsers={MessageType.SC: ScheduleParser(), MessageType.TS: TSParser()}, writer=SQSWriter.create(SQS_URL)
+    )
+
     client = StompClient.create(
         hostname=hostname,
         port=port,
-        parsers=[RegisteredParser(MessageType.SC, ScheduleParser()), RegisteredParser(MessageType.TS, TSParser())],
-        writer=SQSWriter.create(SQS_URL),
+        message_handler=message_handler,
     )
 
     client.connect(credentials.username, credentials.password, topic)

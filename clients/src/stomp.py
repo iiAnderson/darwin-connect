@@ -41,18 +41,43 @@ class WriterInterface(ABC):
     def write(self, msg: WritableMessage) -> None: ...
 
 
-@dataclass
-class RegisteredParser:
+class MessageHandlerInterface(ABC):
 
-    message_type: MessageType
-    parser: MessageParserInterface
+    @abstractmethod
+    def on_message(self, raw_message: RawMessage) -> None: ...
 
 
-class StompListener(stomp.ConnectionListener):
+class DefaultMessageHandler(MessageHandlerInterface):
 
     def __init__(self, parsers: dict[MessageType, MessageParserInterface], writer: WriterInterface) -> None:
         self._parsers = parsers
         self._writer = writer
+
+    def on_message(self, raw_message: RawMessage) -> None:
+
+        try:
+            msg_type = MessageType.parse(raw_message.message_type)
+        except NoValidMessageTypeFound:
+            print(f"Invalid message type {raw_message.message_type}")
+            return
+
+        try:
+            parsed_messages = self._parsers[msg_type].parse(raw_message.body)
+        except KeyError:
+            # print(f"No registered parser for {msg_type}")
+            return
+        except Exception as e:
+            print(f"Invalid message: {str(e)}")
+            return
+
+        for msg in parsed_messages:
+            self._writer.write(msg)
+
+
+class StompListener(stomp.ConnectionListener):
+
+    def __init__(self, message_handler: MessageHandlerInterface) -> None:
+        self._message_handler = message_handler
 
     def on_heartbeat(self) -> None:
         print("Received a heartbeat")
@@ -74,28 +99,11 @@ class StompListener(stomp.ConnectionListener):
     def on_message(self, frame) -> None:
 
         raw_message = RawMessage.create(frame)
-
-        try:
-            msg_type = MessageType.parse(raw_message.message_type)
-        except NoValidMessageTypeFound:
-            print(f"Invalid message type {raw_message.message_type}")
-            return
-
-        try:
-            parsed_messages = self._parsers[msg_type].parse(raw_message.body)
-        except KeyError:
-            # print(f"No registered parser for {msg_type}")
-            return
-        except Exception as e:
-            print(f"Invalid message: {str(e)}")
-            return
-
-        for msg in parsed_messages:
-            self._writer.write(msg)
+        self._message_handler.on_message(raw_message)
 
     @classmethod
-    def create(cls, parsers: list[RegisteredParser], writer: WriterInterface) -> StompListener:
-        return cls({parser.message_type: parser.parser for parser in parsers}, writer)
+    def create(cls, message_handler: MessageHandlerInterface) -> StompListener:
+        return cls(message_handler)
 
 
 HEARTBEAT_INTERVAL_MS = 25000
@@ -127,7 +135,7 @@ class StompClient:
         self.conn.disconnect()
 
     @classmethod
-    def create(cls, hostname: str, port: int, parsers: list[RegisteredParser], writer: WriterInterface) -> StompClient:
+    def create(cls, hostname: str, port: int, message_handler: MessageHandlerInterface) -> StompClient:
         return cls(
             stomp.Connection12(
                 [(hostname, port)],
@@ -140,7 +148,7 @@ class StompClient:
                 reconnect_attempts_max=60,
                 heart_beat_receive_scale=2.5,
             ),
-            StompListener.create(parsers, writer),
+            StompListener.create(message_handler),
         )
 
 

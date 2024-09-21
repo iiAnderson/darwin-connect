@@ -6,12 +6,7 @@ from parser import ScheduleParser, TSParser
 
 import click
 
-from clients.src.stomp import (
-    Credentials,
-    DefaultMessageHandler,
-    RegisteredParser,
-    StompClient,
-)
+from clients.src.stomp import Credentials, DefaultMessageHandler, StompClient
 from database.src.repo import DatabaseRepository
 from models.src.common import MessageType
 from sqs.src.writer import SQSWriter

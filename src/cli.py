@@ -2,14 +2,15 @@ from __future__ import annotations
 
 import os
 import time
-from parser import ScheduleParser, TSParser
 
 import click
 
-from clients.src.stomp import Credentials, DefaultMessageHandler, StompClient
-from database.src.repo import DatabaseRepository
+from clients.src.stomp import Credentials, StompClient
 from models.src.common import MessageType
+from models.src.schedule import ScheduleParser
+from models.src.ts import TSParser
 from sqs.src.writer import SQSWriter
+from src.parser import DefaultMessageHandler
 
 
 @click.command()

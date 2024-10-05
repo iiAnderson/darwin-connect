@@ -4,12 +4,13 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from models.src.common import (
+    FormattedMessage,
     InvalidLocationTypeKey,
     LocationType,
     LocationUpdate,
+    MessageParserInterface,
     ServiceUpdate,
     TimeType,
-    WritableMessage,
 )
 
 
@@ -82,20 +83,41 @@ class LocationsParser:
         return updates
 
 
-@dataclass
-class ScheduleMessage(WritableMessage):
+class ScheduleParser(MessageParserInterface):
 
-    locations: list[LocationUpdate]
-    service: ServiceUpdate
+    def parse(self, raw_body: dict) -> list[FormattedMessage]:
 
-    def get_locations(self) -> list[LocationUpdate]:
-        return self.locations
+        try:
+            data = raw_body["Pport"]
+        except KeyError:
+            print("No Pport found in schedule message")
+            return []
 
-    def get_service(self) -> ServiceUpdate:
-        return self.service
+        try:
+            ts = datetime.fromisoformat(data["@ts"])
+        except KeyError as exception:
+            raise InvalidServiceUpdate(f"Cannot extract ts from {data}") from exception
 
-    @classmethod
-    def _get_list(cls, key: str, body: dict) -> list[dict]:
+        try:
+            ur = data["uR"]
+
+            schedules = ur["schedule"]
+
+            if type(schedules) is dict:
+                schedules = [schedules]
+
+        except KeyError as exception:
+            raise InvalidServiceUpdate(f"Cannot extract uR or schedule from {data}") from exception
+
+        messages = []
+
+        for message in schedules:
+            print("schedule")
+            messages.append(self._parse_message(message, ts))
+
+        return messages
+
+    def _get_list(self, key: str, body: dict) -> list[dict]:
 
         obj = body.get(key, [])
 
@@ -103,33 +125,16 @@ class ScheduleMessage(WritableMessage):
             return [obj]
         return obj
 
-    @classmethod
-    def create(cls, body: dict, ts: datetime) -> ScheduleMessage:
+    def _parse_message(self, body: dict, ts: datetime) -> FormattedMessage:
         raw_locs = []
         updates = []
 
-        raw_locs.extend(cls._get_list("ns2:DT", body))
-        raw_locs.extend(cls._get_list("ns2:OR", body))
-        raw_locs.extend(cls._get_list("ns2:IP", body))
-        raw_locs.extend(cls._get_list("ns2:PP", body))
+        raw_locs.extend(self._get_list("ns2:DT", body))
+        raw_locs.extend(self._get_list("ns2:OR", body))
+        raw_locs.extend(self._get_list("ns2:IP", body))
+        raw_locs.extend(self._get_list("ns2:PP", body))
 
         for raw_loc in raw_locs:
             updates.extend(LocationsParser.parse(raw_loc))
 
-        return cls(updates, ServiceParser.parse(body, ts))
-
-    def to_dict(self) -> dict:
-        return {
-            "rid": self.service.rid,
-            "uid": self.service.uid,
-            "ts": self.service.ts.isoformat(),
-            "toc": self.service.toc,
-            "passenger": self.service.is_passenger_service,
-            "locations": sorted(
-                [
-                    {"tpl": loc.tpl, "type": str(loc.type.value), "time": loc.timestamp.strftime("%H:%M:%S")}
-                    for loc in self.locations
-                ],
-                key=lambda x: x["time"],
-            ),
-        }
+        return FormattedMessage(updates, ServiceParser.parse(body, ts))

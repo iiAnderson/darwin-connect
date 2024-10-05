@@ -79,7 +79,7 @@ class LocationUpdate(Base):
             tpl=model.tpl,
             type=model.type.value,
             time_type=model.time_type.value,
-            time=model.timestamp,
+            time=model.time,
         )
 
     def __eq__(self, obj: object) -> bool:
@@ -95,16 +95,16 @@ class DatabaseRepository(WriterInterface):
     def __init__(self, session: Session) -> None:
         self._session = session
 
-    def write(self, msg: mod.WritableMessage) -> None:
+    def write(self, msg: mod.FormattedMessage) -> None:
 
-        print(f"Saving message for {msg.get_service()}")
+        print(f"Saving message for {msg.service}")
         with self._session.begin() as session:
 
-            service_update = ServiceUpdate.from_model(msg.get_service())
+            service_update = ServiceUpdate.from_model(msg.service)
             session.add(service_update)
             session.flush()
 
-            for loc in msg.get_locations():
+            for loc in msg.locations:
                 session.add(LocationUpdate.from_model(loc, service_update.update_id))  # type: ignore
 
             session.flush()

@@ -4,11 +4,12 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from models.src.common import (
+    FormattedMessage,
     LocationType,
     LocationUpdate,
+    MessageParserInterface,
     ServiceUpdate,
     TimeType,
-    WritableMessage,
 )
 
 
@@ -39,12 +40,9 @@ class ServiceParser:
         except KeyError as exception:
             raise InvalidServiceUpdate(f"Cannot extract uid from {body}") from exception
 
-        try:
-            toc = body.get("@toc")
-        except KeyError as exception:
-            raise InvalidServiceUpdate(f"Cannot extract toc from {body}") from exception
+        toc = str(body.get("@toc", ""))
 
-        return ServiceUpdate(rid, uid, ts, toc=toc)
+        return ServiceUpdate(rid, uid, ts, passenger=False, toc=toc)
 
 
 class TimeTypeParser:
@@ -143,36 +141,37 @@ class LocationsParser:
         return updates
 
 
-@dataclass
-class TSMessage(WritableMessage):
+class TSParser(MessageParserInterface):
 
-    locations: list[LocationUpdate]
-    service: ServiceUpdate
+    def parse(self, raw_body: dict) -> list[FormattedMessage]:
 
-    def get_locations(self) -> list[LocationUpdate]:
-        return self.locations
+        try:
+            data = raw_body["Pport"]
+        except KeyError:
+            print("No Pport found in schedule message")
+            return []
 
-    def get_service(self) -> ServiceUpdate:
-        return self.service
+        try:
+            ts = datetime.fromisoformat(data["@ts"])
+        except KeyError as exception:
+            raise InvalidServiceUpdate(f"Cannot extract ts from {data}") from exception
 
-    @classmethod
-    def create(cls, body: dict, ts: datetime) -> TSMessage:
+        try:
+            ur = data["uR"]
 
-        locations = LocationsParser.parse(body)
-        return cls(locations, ServiceParser.parse(body, ts))
+            msg_ts = ur["TS"]
 
-    def to_dict(self) -> dict:
-        return {
-            "rid": self.service.rid,
-            "uid": self.service.uid,
-            "ts": self.service.ts.isoformat(),
-            "toc": "",
-            "passenger": self.service.is_passenger_service,
-            "locations": sorted(
-                [
-                    {"tpl": loc.tpl, "type": str(loc.type.value), "time": loc.timestamp.strftime("%H:%M:%S")}
-                    for loc in self.locations
-                ],
-                key=lambda x: x["time"],
-            ),
-        }
+            if type(msg_ts) is dict:
+                msg_ts = [msg_ts]
+
+        except KeyError as exception:
+            raise InvalidServiceUpdate(f"Cannot extract uR or schedule from {data}") from exception
+
+        messages = []
+
+        for message in msg_ts:
+
+            locations = LocationsParser.parse(message)
+            messages.append(FormattedMessage(locations, ServiceParser.parse(message, ts)))
+
+        return messages

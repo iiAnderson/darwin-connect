@@ -96,8 +96,6 @@ class TestScheduleParser:
         ts = datetime(2024, 6, 25, 20, 37, 0, 11244, tzinfo=timezone(timedelta(seconds=3600)))
         msg = ScheduleParser().parse(data)
 
-        print(msg)
-
         assert msg == [
             FormattedMessage(
                 locations=[

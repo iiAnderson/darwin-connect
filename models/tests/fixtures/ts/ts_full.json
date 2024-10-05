@@ -1,0 +1,138 @@
+{
+    "Pport": {
+        "@xmlns": "http://www.thalesgroup.com/rtti/PushPort/v16",
+        "@xmlns:ns2": "http://www.thalesgroup.com/rtti/PushPort/Schedules/v3",
+        "@xmlns:ns3": "http://www.thalesgroup.com/rtti/PushPort/Schedules/v2",
+        "@xmlns:ns4": "http://www.thalesgroup.com/rtti/PushPort/Formations/v2",
+        "@xmlns:ns5": "http://www.thalesgroup.com/rtti/PushPort/Forecasts/v3",
+        "@xmlns:ns6": "http://www.thalesgroup.com/rtti/PushPort/Formations/v1",
+        "@xmlns:ns7": "http://www.thalesgroup.com/rtti/PushPort/StationMessages/v1",
+        "@xmlns:ns8": "http://www.thalesgroup.com/rtti/PushPort/TrainAlerts/v1",
+        "@xmlns:ns9": "http://www.thalesgroup.com/rtti/PushPort/TrainOrder/v1",
+        "@xmlns:ns10": "http://www.thalesgroup.com/rtti/PushPort/TDData/v1",
+        "@xmlns:ns11": "http://www.thalesgroup.com/rtti/PushPort/Alarms/v1",
+        "@xmlns:ns12": "http://thalesgroup.com/RTTI/PushPortStatus/root_1",
+        "@ts": "2024-06-25T20:37:00.0112443+01:00",
+        "@version": "16.0",
+        "uR": {
+            "@updateOrigin": "Darwin",
+            "TS": [
+                {
+                    "@rid": "202407188098087",
+                    "@uid": "P98087",
+                    "@ssd": "2024-07-18",
+                    "ns5:Location": [
+                        {
+                            "@tpl": "TONBDG",
+                            "@wtd": "17:03",
+                            "@ptd": "17:03",
+                            "ns5:dep": {
+                                "@et": "17:08",
+                                "@src": "Darwin"
+                            },
+                            "ns5:plat": {
+                                "@platsup": "true",
+                                "@cisPlatsup": "true",
+                                "#text": "1"
+                            }
+                        },
+                        {
+                            "@tpl": "YALDING",
+                            "@wta": "17:18",
+                            "@wtd": "17:19",
+                            "@pta": "17:18",
+                            "@ptd": "17:19",
+                            "ns5:arr": {
+                                "@et": "17:23",
+                                "@src": "Darwin"
+                            },
+                            "ns5:dep": {
+                                "@et": "17:24",
+                                "@src": "Darwin"
+                            },
+                            "ns5:plat": {
+                                "@platsup": "true",
+                                "@cisPlatsup": "true",
+                                "#text": "2"
+                            }
+                        },
+                        {
+                            "@tpl": "WTRNGBY",
+                            "@wta": "17:22",
+                            "@wtd": "17:22:30",
+                            "@pta": "17:22",
+                            "@ptd": "17:22",
+                            "ns5:arr": {
+                                "@et": "17:27",
+                                "@src": "Darwin"
+                            },
+                            "ns5:dep": {
+                                "@et": "17:28",
+                                "@src": "Darwin"
+                            },
+                            "ns5:plat": {
+                                "@platsup": "true",
+                                "@cisPlatsup": "true",
+                                "#text": "2"
+                            }
+                        },
+                        {
+                            "@tpl": "EFARLGH",
+                            "@wta": "17:27",
+                            "@wtd": "17:27:30",
+                            "@pta": "17:27",
+                            "@ptd": "17:27",
+                            "ns5:arr": {
+                                "@et": "17:32",
+                                "@src": "Darwin"
+                            },
+                            "ns5:dep": {
+                                "@et": "17:33",
+                                "@src": "Darwin"
+                            },
+                            "ns5:plat": {
+                                "@platsup": "true",
+                                "@cisPlatsup": "true",
+                                "#text": "2"
+                            }
+                        },
+                        {
+                            "@tpl": "MSTONEW",
+                            "@wta": "17:31:30",
+                            "@wtd": "17:32:30",
+                            "@pta": "17:32",
+                            "@ptd": "17:32",
+                            "ns5:arr": {
+                                "@et": "17:37",
+                                "@src": "Darwin"
+                            },
+                            "ns5:dep": {
+                                "@et": "17:37",
+                                "@src": "Darwin"
+                            },
+                            "ns5:plat": {
+                                "@platsup": "true",
+                                "@cisPlatsup": "true",
+                                "#text": "1"
+                            }
+                        },
+                        {
+                            "@tpl": "STROOD",
+                            "@wta": "17:57",
+                            "@pta": "17:57",
+                            "ns5:arr": {
+                                "@et": "18:02",
+                                "@src": "Darwin"
+                            },
+                            "ns5:plat": {
+                                "@platsup": "true",
+                                "@cisPlatsup": "true",
+                                "#text": "3"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

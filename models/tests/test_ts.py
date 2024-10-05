@@ -1,10 +1,11 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from freezegun import freeze_time
 
 from models.src.common import (
+    FormattedMessage,
     LocationType,
     LocationUpdate,
     ServiceUpdate,
@@ -18,7 +19,7 @@ from models.src.ts import (
     LocationsParser,
     ServiceParser,
     TimeTypeParser,
-    TSMessage,
+    TSParser,
 )
 
 
@@ -27,15 +28,11 @@ class TestServiceParser:
     @freeze_time("2024-07-15")
     def test(self) -> None:
 
-        body = {
-            "@rid": "202407188098087",
-            "@uid": "P98087",
-            "@ssd": "2024-07-18",
-        }
+        body = {"@rid": "202407188098087", "@uid": "P98087", "@ssd": "2024-07-18", "@toc": "SOU"}
 
         ts = datetime.now()
 
-        assert ServiceParser.parse(body, ts) == ServiceUpdate("202407188098087", "P98087", ts)
+        assert ServiceParser.parse(body, ts) == ServiceUpdate("202407188098087", "P98087", ts, False, "SOU")
 
     @pytest.mark.parametrize(
         "input",
@@ -79,13 +76,13 @@ class TestArrivalParser:
                         tpl="TPL1",
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 37),
+                        time=datetime(1900, 1, 1, 17, 37),
                     ),
                     LocationUpdate(
                         tpl="TPL1",
                         type=LocationType.ARR,
                         time_type=TimeType.ACTUAL,
-                        timestamp=datetime(1900, 1, 1, 17, 38),
+                        time=datetime(1900, 1, 1, 17, 38),
                     ),
                 ],
             ),
@@ -110,13 +107,13 @@ class TestDepartureParser:
                         tpl="TPL1",
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 37),
+                        time=datetime(1900, 1, 1, 17, 37),
                     ),
                     LocationUpdate(
                         tpl="TPL1",
                         type=LocationType.DEP,
                         time_type=TimeType.ACTUAL,
-                        timestamp=datetime(1900, 1, 1, 17, 38),
+                        time=datetime(1900, 1, 1, 17, 38),
                     ),
                 ],
             ),
@@ -133,7 +130,7 @@ class TestLocationsParser:
 
     def test(self) -> None:
 
-        with open("test/fixtures/ts/ts_1.json", "r") as f:
+        with open("tests/fixtures/ts/ts_1.json", "r") as f:
             data = json.load(f)
 
         locs = LocationsParser.parse(data)
@@ -143,61 +140,61 @@ class TestLocationsParser:
                 tpl="TONBDG",
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
-                timestamp=datetime(1900, 1, 1, 17, 8),
+                time=datetime(1900, 1, 1, 17, 8),
             ),
             LocationUpdate(
                 tpl="YALDING",
                 type=LocationType.ARR,
                 time_type=TimeType.ESTIMATED,
-                timestamp=datetime(1900, 1, 1, 17, 23),
+                time=datetime(1900, 1, 1, 17, 23),
             ),
             LocationUpdate(
                 tpl="YALDING",
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
-                timestamp=datetime(1900, 1, 1, 17, 24),
+                time=datetime(1900, 1, 1, 17, 24),
             ),
             LocationUpdate(
                 tpl="WTRNGBY",
                 type=LocationType.ARR,
                 time_type=TimeType.ESTIMATED,
-                timestamp=datetime(1900, 1, 1, 17, 27),
+                time=datetime(1900, 1, 1, 17, 27),
             ),
             LocationUpdate(
                 tpl="WTRNGBY",
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
-                timestamp=datetime(1900, 1, 1, 17, 28),
+                time=datetime(1900, 1, 1, 17, 28),
             ),
             LocationUpdate(
                 tpl="EFARLGH",
                 type=LocationType.ARR,
                 time_type=TimeType.ESTIMATED,
-                timestamp=datetime(1900, 1, 1, 17, 32),
+                time=datetime(1900, 1, 1, 17, 32),
             ),
             LocationUpdate(
                 tpl="EFARLGH",
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
-                timestamp=datetime(1900, 1, 1, 17, 33),
+                time=datetime(1900, 1, 1, 17, 33),
             ),
             LocationUpdate(
                 tpl="MSTONEW",
                 type=LocationType.ARR,
                 time_type=TimeType.ESTIMATED,
-                timestamp=datetime(1900, 1, 1, 17, 37),
+                time=datetime(1900, 1, 1, 17, 37),
             ),
             LocationUpdate(
                 tpl="MSTONEW",
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
-                timestamp=datetime(1900, 1, 1, 17, 37),
+                time=datetime(1900, 1, 1, 17, 37),
             ),
             LocationUpdate(
                 tpl="STROOD",
                 type=LocationType.ARR,
                 time_type=TimeType.ESTIMATED,
-                timestamp=datetime(1900, 1, 1, 18, 2),
+                time=datetime(1900, 1, 1, 18, 2),
             ),
         ]
 
@@ -223,180 +220,85 @@ class TestLocationsParser:
                 tpl="TONBDG",
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
-                timestamp=datetime(1900, 1, 1, 17, 8),
+                time=datetime(1900, 1, 1, 17, 8),
             )
         ]
 
-    class TestTSMessage:
 
-        @freeze_time("2024-07-15")
-        def test(self) -> None:
+class TestTSParser:
 
-            with open("test/fixtures/ts/ts_full.json", "r") as f:
-                data = json.load(f)
+    def test(self) -> None:
 
-            ts = datetime.now()
+        with open("tests/fixtures/ts/ts_full.json", "r") as f:
+            data = json.load(f)
 
-            msg = TSMessage.create(data, ts)
+        locs = TSParser().parse(data)
+        ts = datetime(2024, 6, 25, 20, 37, 0, 11244, tzinfo=timezone(timedelta(seconds=3600)))
 
-            assert msg == TSMessage(
-                [
+        assert locs == [
+            FormattedMessage(
+                service=ServiceUpdate(rid="202407188098087", uid="P98087", ts=ts, passenger=False, toc=""),
+                locations=[
                     LocationUpdate(
                         tpl="TONBDG",
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 8),
-                    ),
-                    LocationUpdate(
-                        tpl="PKWD",
-                        type=LocationType.ARR,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 15),
-                    ),
-                    LocationUpdate(
-                        tpl="PKWD",
-                        type=LocationType.DEP,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 16),
-                    ),
-                    LocationUpdate(
-                        tpl="BLTRNAB",
-                        type=LocationType.ARR,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 20),
-                    ),
-                    LocationUpdate(
-                        tpl="BLTRNAB",
-                        type=LocationType.DEP,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 20),
+                        time=datetime(1900, 1, 1, 17, 8),
                     ),
                     LocationUpdate(
                         tpl="YALDING",
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 23),
+                        time=datetime(1900, 1, 1, 17, 23),
                     ),
                     LocationUpdate(
                         tpl="YALDING",
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 24),
+                        time=datetime(1900, 1, 1, 17, 24),
                     ),
                     LocationUpdate(
                         tpl="WTRNGBY",
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 27),
+                        time=datetime(1900, 1, 1, 17, 27),
                     ),
                     LocationUpdate(
                         tpl="WTRNGBY",
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 28),
+                        time=datetime(1900, 1, 1, 17, 28),
                     ),
                     LocationUpdate(
                         tpl="EFARLGH",
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 32),
+                        time=datetime(1900, 1, 1, 17, 32),
                     ),
                     LocationUpdate(
                         tpl="EFARLGH",
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 33),
+                        time=datetime(1900, 1, 1, 17, 33),
                     ),
                     LocationUpdate(
                         tpl="MSTONEW",
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 37),
+                        time=datetime(1900, 1, 1, 17, 37),
                     ),
                     LocationUpdate(
                         tpl="MSTONEW",
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 37),
-                    ),
-                    LocationUpdate(
-                        tpl="MSTONEB",
-                        type=LocationType.ARR,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 39),
-                    ),
-                    LocationUpdate(
-                        tpl="MSTONEB",
-                        type=LocationType.DEP,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 40),
-                    ),
-                    LocationUpdate(
-                        tpl="AYLESFD",
-                        type=LocationType.ARR,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 44),
-                    ),
-                    LocationUpdate(
-                        tpl="AYLESFD",
-                        type=LocationType.DEP,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 45),
-                    ),
-                    LocationUpdate(
-                        tpl="NWHYTHE",
-                        type=LocationType.ARR,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 47),
-                    ),
-                    LocationUpdate(
-                        tpl="NWHYTHE",
-                        type=LocationType.DEP,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 47),
-                    ),
-                    LocationUpdate(
-                        tpl="SNODLND",
-                        type=LocationType.ARR,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 50),
-                    ),
-                    LocationUpdate(
-                        tpl="SNODLND",
-                        type=LocationType.DEP,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 51),
-                    ),
-                    LocationUpdate(
-                        tpl="HALG",
-                        type=LocationType.ARR,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 53),
-                    ),
-                    LocationUpdate(
-                        tpl="HALG",
-                        type=LocationType.DEP,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 54),
-                    ),
-                    LocationUpdate(
-                        tpl="CXTN",
-                        type=LocationType.ARR,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 57),
-                    ),
-                    LocationUpdate(
-                        tpl="CXTN",
-                        type=LocationType.DEP,
-                        time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 17, 57),
+                        time=datetime(1900, 1, 1, 17, 37),
                     ),
                     LocationUpdate(
                         tpl="STROOD",
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
-                        timestamp=datetime(1900, 1, 1, 18, 2),
+                        time=datetime(1900, 1, 1, 18, 2),
                     ),
                 ],
-                ServiceUpdate("202407188098087", "P98087", ts),
             )
+        ]

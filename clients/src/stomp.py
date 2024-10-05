@@ -13,12 +13,6 @@ import stomp
 import xmltodict
 from stomp.utils import Frame
 
-from models.src.common import (
-    MessageType,
-    NoValidMessageTypeFound,
-    WritableMessage,
-)
-
 
 class InvalidCredentials(Exception): ...
 
@@ -32,46 +26,19 @@ RECONNECT_DELAY_SECS = 15
 class MessageParserInterface(ABC):
 
     @abstractmethod
-    def parse(self, data: dict) -> list[WritableMessage]: ...
+    def parse(self, data: dict) -> list[RawMessage]: ...
 
 
 class WriterInterface(ABC):
 
     @abstractmethod
-    def write(self, msg: WritableMessage) -> None: ...
+    def write(self, msg: dict) -> None: ...
 
 
 class MessageHandlerInterface(ABC):
 
     @abstractmethod
     def on_message(self, raw_message: RawMessage) -> None: ...
-
-
-class DefaultMessageHandler(MessageHandlerInterface):
-
-    def __init__(self, parsers: dict[MessageType, MessageParserInterface], writer: WriterInterface) -> None:
-        self._parsers = parsers
-        self._writer = writer
-
-    def on_message(self, raw_message: RawMessage) -> None:
-
-        try:
-            msg_type = MessageType.parse(raw_message.message_type)
-        except NoValidMessageTypeFound:
-            print(f"Invalid message type {raw_message.message_type}")
-            return
-
-        try:
-            parsed_messages = self._parsers[msg_type].parse(raw_message.body)
-        except KeyError:
-            # print(f"No registered parser for {msg_type}")
-            return
-        except Exception as e:
-            print(f"Invalid message: {str(e)}")
-            return
-
-        for msg in parsed_messages:
-            self._writer.write(msg)
 
 
 class StompListener(stomp.ConnectionListener):
@@ -111,7 +78,7 @@ HEARTBEAT_INTERVAL_MS = 25000
 
 class StompClient:
 
-    def __init__(self, conn: stomp.Connection12, listener: StompListener) -> None:
+    def __init__(self, conn: stomp.Connection12, listener: stomp.ConnectionListener) -> None:
 
         self.conn = conn
         self._listener = listener

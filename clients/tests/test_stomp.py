@@ -2,21 +2,45 @@ import os
 from unittest import mock
 
 import pytest
+import stomp
+from stomp.utils import Frame
+
 from src.stomp import (
     Credentials,
     InvalidCredentials,
     InvalidMessage,
+    MessageHandlerInterface,
     RawMessage,
     StompClient,
 )
-from stomp.utils import Frame
+
+
+class MockStompListener(stomp.ConnectionListener):
+
+    def on_heartbeat(self) -> None: ...
+
+    def on_heartbeat_timeout(self) -> None: ...
+
+    def on_error(self, headers, message) -> None: ...
+
+    def on_disconnected(self) -> None:
+        print("Disconnected")
+
+    def on_connecting(self, host_and_port) -> None: ...
+
+    def on_message(self, frame) -> None: ...
+
+
+class MockMessageHandler(MessageHandlerInterface):
+
+    def on_message(self, raw_message: RawMessage) -> None: ...
 
 
 class TestStompClient:
 
     def test_connect(self) -> None:
         mock_client = mock.Mock()
-        client = StompClient(mock_client)
+        client = StompClient(mock_client, MockStompListener())
 
         client.connect("username", "password", "topic")
 
@@ -25,7 +49,7 @@ class TestStompClient:
 
     def test_disconnect(self) -> None:
         mock_client = mock.Mock()
-        client = StompClient(mock_client)
+        client = StompClient(mock_client, MockStompListener())
 
         client.disconnect()
 

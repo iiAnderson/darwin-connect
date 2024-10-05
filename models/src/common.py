@@ -19,6 +19,12 @@ class InvalidLocation(Exception): ...
 class InvalidServiceUpdate(Exception): ...
 
 
+class MessageParserInterface(ABC):
+
+    @abstractmethod
+    def parse(self, data: dict) -> list[FormattedMessage]: ...
+
+
 class MessageType(str, Enum):
 
     TS = "TS"  # Actual and forecast information
@@ -65,34 +71,50 @@ class TimeType(Enum):
 
 
 @dataclass
-class ServiceUpdate:
-
-    rid: str
-    uid: str
-    ts: datetime
-    is_passenger_service: Optional[bool] = None
-    toc: Optional[str] = None
-
-
-@dataclass
 class LocationUpdate:
 
     tpl: str
     type: LocationType
     time_type: TimeType
-    timestamp: datetime
+    time: datetime
+
+    def to_dict(self) -> dict:
+        return {
+            "tpl": self.tpl,
+            "type": self.type.value,
+            "time_type": self.time_type.value,
+            "time": self.time.strftime("%H:%M:%S"),
+        }
 
 
-class WritableMessage(ABC):
+@dataclass
+class ServiceUpdate:
+
+    rid: str
+    uid: str
+    ts: datetime
+    passenger: Optional[bool]
+    toc: str
+
+    def to_dict(self) -> dict:
+        return {
+            "rid": self.rid,
+            "uid": self.uid,
+            "ts": self.ts.isoformat(),
+            "passenger": self.passenger,
+            "toc": self.toc,
+        }
+
+
+@dataclass
+class FormattedMessage:
 
     locations: list[LocationUpdate]
     service: ServiceUpdate
 
-    @abstractmethod
-    def get_locations(self) -> list[LocationUpdate]: ...
+    def to_messages(self) -> list[dict]:
 
-    @abstractmethod
-    def get_service(self) -> ServiceUpdate: ...
+        data = [loc.to_dict() for loc in self.locations]
+        data.append(self.service.to_dict())
 
-    @abstractmethod
-    def to_dict(self) -> dict: ...
+        return data

@@ -23,12 +23,6 @@ class InvalidMessage(Exception): ...
 RECONNECT_DELAY_SECS = 15
 
 
-class MessageParserInterface(ABC):
-
-    @abstractmethod
-    def parse(self, data: dict) -> list[RawMessage]: ...
-
-
 class WriterInterface(ABC):
 
     @abstractmethod

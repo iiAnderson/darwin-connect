@@ -1,5 +1,17 @@
+from datetime import datetime
+
 import pytest
-from models.src.common import InvalidLocationTypeKey, LocationType, MessageType, NoValidMessageTypeFound
+from freezegun import freeze_time
+
+from models.src.common import (
+    InvalidLocationTypeKey,
+    LocationType,
+    LocationUpdate,
+    MessageType,
+    NoValidMessageTypeFound,
+    ServiceUpdate,
+    TimeType,
+)
 
 
 class TestMessageType:
@@ -27,6 +39,7 @@ class TestMessageType:
         with pytest.raises(NoValidMessageTypeFound):
             MessageType.parse(input)
 
+
 class TestLocationType:
 
     @pytest.mark.parametrize(
@@ -41,3 +54,36 @@ class TestLocationType:
 
         with pytest.raises(InvalidLocationTypeKey):
             LocationType.create(input)
+
+
+class TestServiceUpdate:
+
+    def test__to_dict(self) -> None:
+
+        service = ServiceUpdate(rid="rid", uid="uid", ts=datetime(2024, 8, 11), passenger=False, toc="SOU")
+        assert service.to_dict() == {
+            "rid": "rid",
+            "uid": "uid",
+            "ts": "2024-08-11T00:00:00",
+            "passenger": False,
+            "toc": "SOU",
+        }
+
+
+class TestLocationUpdate:
+
+    def test__to_dict(self) -> None:
+
+        location = LocationUpdate(
+            tpl="tpl",
+            type=LocationType.ARR,
+            time_type=TimeType.ACTUAL,
+            time=datetime(year=1900, month=1, day=1, hour=11, minute=0, second=0),
+        )
+
+        assert location.to_dict() == {
+            "tpl": "tpl",
+            "type": "ARR",
+            "time_type": "ACT",
+            "time": "11:00:00",
+        }

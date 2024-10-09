@@ -40,8 +40,12 @@ class DefaultMessageHandler(MessageHandlerInterface):
             print(f"Invalid message: {str(e)}")
             return
 
-        for msg in parsed_messages:
-            self._writer.write(msg)
+        if not self._writer:
+            return
+
+        for msgs in parsed_messages:
+            for msg in msgs.to_messages():
+                self._writer.write(msg)
 
 
 class RawMessageHandler(MessageHandlerInterface):

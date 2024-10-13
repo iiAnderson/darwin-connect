@@ -38,7 +38,7 @@ class Buffer(BufferInterface):
         buffer_length = len(self._buffer)
 
         print(f"Buffer size: {buffer_length}")
-        if buffer_length >= 100:
+        if buffer_length >= 50:
             to_return = self._buffer
             self._buffer = []
 

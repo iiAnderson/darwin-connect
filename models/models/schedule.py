@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 
-from models.src.common import (
+from models.common import (
     FormattedMessage,
     InvalidLocationTypeKey,
     LocationType,

@@ -1,16 +1,13 @@
 from datetime import datetime, timedelta, timezone
 
-import pytest
-
-from clients.src.stomp import RawMessage, WriterInterface
-from models.src.common import (
+from clients.stomp import RawMessage, WriterInterface
+from models.common import (
     FormattedMessage,
     MessageParserInterface,
     MessageType,
-    NoValidMessageTypeFound,
     TimeType,
 )
-from models.src.schedule import LocationType, LocationUpdate, ServiceUpdate
+from models.schedule import LocationType, LocationUpdate, ServiceUpdate
 from src.parser import DefaultMessageHandler
 
 

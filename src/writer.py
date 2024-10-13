@@ -1,5 +1,4 @@
-from clients.src.stomp import WriterInterface
-from models.src.common import FormattedMessage
+from clients.stomp import WriterInterface
 
 
 class StdOutWriter(WriterInterface):

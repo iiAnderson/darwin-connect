@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 import boto3
 from mypy_boto3_sqs import SQSClient
 
-from clients.src.stomp import WriterInterface
+from clients.stomp import WriterInterface
 
 
 @dataclass

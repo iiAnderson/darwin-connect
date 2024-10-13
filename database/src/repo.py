@@ -22,7 +22,7 @@ from sqlalchemy.orm import (
 )
 
 import models.src.common as mod
-from clients.src.stomp import WriterInterface
+from clients.stomp import WriterInterface
 
 
 class Base(DeclarativeBase):

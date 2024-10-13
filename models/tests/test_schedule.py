@@ -2,10 +2,9 @@ import json
 from datetime import datetime, timedelta, timezone
 
 import pytest
-from freezegun import freeze_time
 
-from models.src.common import FormattedMessage
-from models.src.schedule import (
+from models.common import FormattedMessage
+from models.schedule import (
     InvalidLocation,
     InvalidServiceUpdate,
     LocationsParser,

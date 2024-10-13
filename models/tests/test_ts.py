@@ -4,14 +4,14 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from freezegun import freeze_time
 
-from models.src.common import (
+from models.common import (
     FormattedMessage,
     LocationType,
     LocationUpdate,
     ServiceUpdate,
     TimeType,
 )
-from models.src.ts import (
+from models.ts import (
     ArrivalParser,
     DepartureParser,
     InvalidServiceUpdate,

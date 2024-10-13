@@ -5,11 +5,11 @@ import time
 
 import click
 
-from clients.src.stomp import Credentials, StompClient
-from models.src.common import MessageType
-from models.src.schedule import ScheduleParser
-from models.src.ts import TSParser
-from sqs.src.writer import SQSWriter
+from clients.stomp import Credentials, StompClient
+from models.common import MessageType
+from models.schedule import ScheduleParser
+from models.ts import TSParser
+from sqs.writer import SQSWriter
 from src.parser import DefaultMessageHandler
 
 

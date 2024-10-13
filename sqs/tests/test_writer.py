@@ -2,7 +2,7 @@ import boto3
 from freezegun import freeze_time
 from moto import mock_aws
 
-from sqs.src.writer import Buffer, BufferedMessage, BufferInterface, SQSWriter
+from sqs.writer import Buffer, BufferedMessage, BufferInterface, SQSWriter
 
 
 class MockBuffer(BufferInterface):

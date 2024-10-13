@@ -2,13 +2,8 @@ from __future__ import annotations
 
 from typing import Optional
 
-from clients.src.stomp import (
-    MessageHandlerInterface,
-    RawMessage,
-    WriterInterface,
-)
-from models.src.common import (
-    FormattedMessage,
+from clients.stomp import MessageHandlerInterface, RawMessage, WriterInterface
+from models.common import (
     MessageParserInterface,
     MessageType,
     NoValidMessageTypeFound,

@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
 import boto3
+import botocore
 from mypy_boto3_sqs import SQSClient
 
 from clients.src.stomp import WriterInterface
@@ -25,18 +26,22 @@ class BufferInterface(ABC):
     @abstractmethod
     def add(self, msg: BufferedMessage) -> list[BufferedMessage]: ...
 
+    @abstractmethod
+    def get_messages(self, split: bool = False) -> list[BufferedMessage]: ...
+
 
 @dataclass
 class Buffer(BufferInterface):
 
     _buffer: list[BufferedMessage] = field(default_factory=list)
 
-    def add(self, msg: BufferedMessage) -> list[BufferedMessage]:
+    def add(self, msg: BufferedMessage) -> None:
 
         self._buffer.append(msg)
 
-        buffer_length = len(self._buffer)
+    def get_messages(self, split: bool = False) -> list[BufferedMessage]:
 
+        buffer_length = len(self._buffer)
         print(f"Buffer size: {buffer_length}")
         if buffer_length >= 100:
             to_return = self._buffer
@@ -54,18 +59,30 @@ class SQSWriter(WriterInterface):
 
         self._buffer = buffer
 
+    def _write(self, data: list[dict]) -> None:
+
+        if data:
+            print("---------")
+            print(f"Flushing {len(data)} messages to queue")
+
+            try:
+                self._sqs_client.send_message(QueueUrl=self._queue_url, MessageBody=json.dumps(data))
+            except botocore.exceptions.ClientError as e:
+                if e.response["Error"]["Code"] == "LimitExceededException":
+                    print("Message to large, splitting")
+                    self._write(data[: len(data) // 2])
+                    self._write(data[len(data) // 2 :])
+
     def write(self, msg: dict) -> None:
 
-        to_write = self._buffer.add(BufferedMessage.create(msg))
+        self._buffer.add(BufferedMessage.create(msg))
+        to_write = self._buffer.get_messages()
         msgs = []
 
         for msg_to_write in to_write:
             msgs.append(msg_to_write.data)
 
-        if msgs:
-            print("---------")
-            print(f"Flushing {len(msgs)} messages to queue")
-            self._sqs_client.send_message(QueueUrl=self._queue_url, MessageBody=json.dumps(msgs))
+        self._write(msgs)
 
     @classmethod
     def create(cls, queue_url: str) -> SQSWriter:

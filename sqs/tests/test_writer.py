@@ -7,13 +7,23 @@ from sqs.src.writer import Buffer, BufferedMessage, BufferInterface, SQSWriter
 
 class MockBuffer(BufferInterface):
 
-    def add(self, msg: BufferedMessage) -> list[BufferedMessage]:
-        return [msg]
+    def __init__(self):
+
+        self._msgs: list[BufferedMessage] = []
+
+    def add(self, msg: BufferedMessage) -> None:
+        self._msgs.append(msg)
+
+    def get_messages(self, split: bool = False) -> list[BufferedMessage]:
+        return self._msgs
 
 
 class BlankBuffer(BufferInterface):
 
-    def add(self, _: BufferedMessage) -> list[BufferedMessage]:
+    def add(self, _: BufferedMessage) -> None:
+        return None
+
+    def get_messages(self, split: bool = False) -> list[BufferedMessage]:
         return []
 
 
@@ -63,8 +73,8 @@ class TestBuffer:
         buffer = Buffer()
         msg = BufferedMessage({"data": "yes"})
 
-        result = buffer.add(msg)
-        assert result == []
+        buffer.add(msg)
+        assert buffer.get_messages() == []
 
     def test__full(self) -> None:
 
@@ -72,6 +82,6 @@ class TestBuffer:
         msgs = [BufferedMessage({"data": "yes"}) for _ in range(100)]
 
         for msg in msgs:
-            result = buffer.add(msg)
+            buffer.add(msg)
 
-        assert result == msgs
+        assert buffer.get_messages() == msgs

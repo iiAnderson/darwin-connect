@@ -1,9 +1,8 @@
 from datetime import datetime
 
 import pytest
-from freezegun import freeze_time
 
-from models.src.common import (
+from models.common import (
     InvalidLocationTypeKey,
     LocationType,
     LocationUpdate,

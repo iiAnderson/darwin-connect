@@ -5,7 +5,7 @@ import pytest
 import stomp
 from stomp.utils import Frame
 
-from src.stomp import (
+from clients.stomp import (
     Credentials,
     InvalidCredentials,
     InvalidMessage,

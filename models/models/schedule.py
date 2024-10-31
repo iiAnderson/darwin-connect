@@ -112,7 +112,6 @@ class ScheduleParser(MessageParserInterface):
         messages = []
 
         for message in schedules:
-            print("schedule")
             messages.append(self._parse_message(message, ts))
 
         return messages

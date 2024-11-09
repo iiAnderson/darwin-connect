@@ -15,10 +15,18 @@ from clients.stomp import WriterInterface
 class BufferedMessage:
 
     data: dict
+    message_type: str
 
     @classmethod
-    def create(cls, msg: dict) -> BufferedMessage:
-        return cls(msg)
+    def create(cls, msg: dict, message_type: str) -> BufferedMessage:
+        return cls(msg, message_type)
+    
+    def format(self) -> dict:
+
+        fmt_data = self.data.copy()
+        fmt_data['message_type'] = self.message_type
+
+        return fmt_data
 
 
 class BufferInterface(ABC):
@@ -73,14 +81,14 @@ class SQSWriter(WriterInterface):
                     self._write(data[: len(data) // 2])
                     self._write(data[len(data) // 2 :])
 
-    def write(self, msg: dict) -> None:
+    def write(self, msg: dict, message_type: str) -> None:
 
-        self._buffer.add(BufferedMessage.create(msg))
+        self._buffer.add(BufferedMessage.create(msg, message_type))
         to_write = self._buffer.get_messages()
         msgs = []
 
         for msg_to_write in to_write:
-            msgs.append(msg_to_write.data)
+            msgs.append(msg_to_write.format())
 
         self._write(msgs)
 

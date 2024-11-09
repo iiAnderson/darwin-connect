@@ -26,7 +26,7 @@ RECONNECT_DELAY_SECS = 15
 class WriterInterface(ABC):
 
     @abstractmethod
-    def write(self, msg: dict) -> None: ...
+    def write(self, msg: dict, message_type: str) -> None: ...
 
 
 class MessageHandlerInterface(ABC):
@@ -154,3 +154,13 @@ class RawMessage:
         data = xmltodict.parse(msg)
 
         return cls(message_type, data)
+
+    @classmethod
+    def create_from_dict(cls, body: dict) -> RawMessage:
+
+        try:
+            message_type = body["message_type"]
+        except KeyError:
+            raise InvalidMessage(f"MessageType not found in frame headers {body}")
+        
+        return cls(message_type, body)

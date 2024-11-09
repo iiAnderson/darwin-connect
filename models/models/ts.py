@@ -40,8 +40,9 @@ class ServiceParser:
             raise InvalidServiceUpdate(f"Cannot extract uid from {body}") from exception
 
         toc = str(body.get("@toc", ""))
+        train_id = str(body.get("@trainId", ""))
 
-        return ServiceUpdate(rid, uid, ts, passenger=False, toc=toc)
+        return ServiceUpdate(rid, uid, ts, passenger=False, toc=toc, train_id=train_id)
 
 
 class TimeTypeParser:

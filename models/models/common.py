@@ -95,6 +95,7 @@ class ServiceUpdate:
     ts: datetime
     passenger: Optional[bool]
     toc: str
+    train_id: str
 
     def to_dict(self) -> dict:
         return {
@@ -103,6 +104,7 @@ class ServiceUpdate:
             "ts": self.ts.isoformat(),
             "passenger": self.passenger,
             "toc": self.toc,
+            "trainId": self.train_id,
         }
 
 

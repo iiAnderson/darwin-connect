@@ -21,11 +21,11 @@ class TestServiceParser:
 
     def test(self) -> None:
 
-        data = {"@rid": "202406258080789", "@uid": "P80789", "@toc": "abc"}
+        data = {"@rid": "202406258080789", "@uid": "P80789", "@toc": "abc", "@trainId": "def"}
         ts = datetime.now()
 
         assert ServiceParser.parse(data, ts) == ServiceUpdate(
-            rid="202406258080789", uid="P80789", toc="abc", ts=ts, passenger=True
+            rid="202406258080789", uid="P80789", toc="abc", ts=ts, passenger=True, train_id="def"
         )
 
     @pytest.mark.parametrize(
@@ -237,7 +237,9 @@ class TestScheduleParser:
                         time=datetime(1900, 1, 1, 0, 27),
                     ),
                 ],
-                service=ServiceUpdate(rid="202406258080789", uid="P80789", ts=ts, passenger=True, toc="SR"),
+                service=ServiceUpdate(
+                    rid="202406258080789", uid="P80789", ts=ts, passenger=True, toc="SR", train_id="2J11"
+                ),
             ),
             FormattedMessage(
                 locations=[
@@ -254,6 +256,8 @@ class TestScheduleParser:
                         time=datetime(1900, 1, 1, 0, 43),
                     ),
                 ],
-                service=ServiceUpdate(rid="202406268083879", uid="P83879", ts=ts, passenger=False, toc="SR"),
+                service=ServiceUpdate(
+                    rid="202406268083879", uid="P83879", ts=ts, passenger=False, toc="SR", train_id="5J11"
+                ),
             ),
         ]

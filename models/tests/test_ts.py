@@ -28,11 +28,13 @@ class TestServiceParser:
     @freeze_time("2024-07-15")
     def test(self) -> None:
 
-        body = {"@rid": "202407188098087", "@uid": "P98087", "@ssd": "2024-07-18", "@toc": "SOU"}
+        body = {"@rid": "202407188098087", "@uid": "P98087", "@ssd": "2024-07-18", "@toc": "SOU", "trainId": "def"}
 
         ts = datetime.now()
 
-        assert ServiceParser.parse(body, ts) == ServiceUpdate("202407188098087", "P98087", ts, False, "SOU")
+        assert ServiceParser.parse(body, ts) == ServiceUpdate(
+            "202407188098087", "P98087", ts, False, "SOU", train_id="def"
+        )
 
     @pytest.mark.parametrize(
         "input",
@@ -237,7 +239,7 @@ class TestTSParser:
 
         assert locs == [
             FormattedMessage(
-                service=ServiceUpdate(rid="202407188098087", uid="P98087", ts=ts, passenger=False, toc=""),
+                service=ServiceUpdate(rid="202407188098087", uid="P98087", ts=ts, passenger=False, toc="", train_id=""),
                 locations=[
                     LocationUpdate(
                         tpl="TONBDG",

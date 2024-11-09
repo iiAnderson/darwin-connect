@@ -43,13 +43,18 @@ class ServiceParser:
             raise InvalidServiceUpdate(f"Cannot extract uid from {body}") from exception
 
         try:
+            train_id = body["@trainId"]
+        except KeyError as exception:
+            raise InvalidServiceUpdate(f"Cannot extract trainId from {body}") from exception
+
+        try:
             toc = body["@toc"]
         except KeyError as exception:
             raise InvalidServiceUpdate(f"Cannot extract toc from {body}") from exception
 
         is_passenger_service = cls.get_passenger_status(body)
 
-        return ServiceUpdate(rid, uid, ts, is_passenger_service, toc)
+        return ServiceUpdate(rid, uid, ts, is_passenger_service, toc, train_id)
 
 
 @dataclass
@@ -100,7 +105,6 @@ class ScheduleParser(MessageParserInterface):
 
         try:
             ur = data["uR"]
-
             schedules = ur["schedule"]
 
             if type(schedules) is dict:
@@ -112,7 +116,6 @@ class ScheduleParser(MessageParserInterface):
         messages = []
 
         for message in schedules:
-            print("schedule")
             messages.append(self._parse_message(message, ts))
 
         return messages

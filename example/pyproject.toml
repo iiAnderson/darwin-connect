@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "darwin-connect"
+name = "darwin-connect-example"
 version = "0.1.0"
 description = ""
 authors = ["Robbie Anderson <ra12g14@gmail.com>"]
@@ -7,6 +7,8 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
+clients = {path = "../clients", develop = true}
+models = {path = "../models", develop = true}
 isort = "^5.13.2"
 black = "^24.4.2"
 

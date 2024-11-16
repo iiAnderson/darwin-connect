@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-import os
 import time
 
 import click
 
 from clients.stomp import Credentials, StompClient
+from example.parser import RawMessageHandler
+from example.writer import StdOutWriter
 from models.common import MessageType
 from models.schedule import ScheduleParser
 from models.ts import TSParser
-from sqs.writer import SQSWriter
-from src.parser import DefaultMessageHandler
 
 
 @click.command()
@@ -20,12 +19,10 @@ def main() -> None:
     port = 61613
     topic = "/topic/darwin.pushport-v16"
 
-    SQS_URL = os.environ.get("SQS_URL")
-
     credentials = Credentials.parse()
 
-    message_handler = DefaultMessageHandler(
-        parsers={MessageType.SC: ScheduleParser(), MessageType.TS: TSParser()}, writer=SQSWriter.create(SQS_URL)
+    message_handler = RawMessageHandler(
+        parsers={MessageType.SC: ScheduleParser(), MessageType.TS: TSParser()}, writer=StdOutWriter()
     )
 
     client = StompClient.create(
@@ -34,6 +31,7 @@ def main() -> None:
         message_handler=message_handler,
     )
 
+    print("Opening connection")
     client.connect(credentials.username, credentials.password, topic)
 
     try:

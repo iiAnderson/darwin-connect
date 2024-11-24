@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import time
+from parser import RawMessageHandler
 
 import click
+from writer import StdOutWriter
 
 from clients.stomp import Credentials, StompClient
-from example.parser import RawMessageHandler
-from example.writer import StdOutWriter
 from models.common import MessageType
 from models.schedule import ScheduleParser
 from models.ts import TSParser

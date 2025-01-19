@@ -76,6 +76,7 @@ class StompClient:
 
         self.conn = conn
         self._listener = listener
+        self.connected = False
 
     def connect(self, username: str, password: str, topic: str) -> None:
 
@@ -87,12 +88,15 @@ class StompClient:
         subscribe_header = {"activemq.subscriptionName": client_id}
 
         self.conn.connect(username=username, passcode=password, wait=True, headers=connect_header)
-
         self.conn.subscribe(destination=topic, id="1", ack="auto", headers=subscribe_header)
+        self.connected = True
 
         print("Connected")
 
     def disconnect(self) -> None:
+        print("Disconnected")
+        self.connected = False
+        
         self.conn.disconnect()
 
     @classmethod

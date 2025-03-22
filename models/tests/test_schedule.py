@@ -47,7 +47,7 @@ class TestLocationsParser:
                 {"@wtd": "23:57", "@tpl": "EKILBRD", "@act": "TB", "@ptd": "23:57"},
                 [
                     LocationUpdate(
-                        "EKILBRD", LocationType.DEP, TimeType.SCHEDULED, datetime(1900, 1, 1, hour=23, minute=57)
+                        "EKILBRD", LocationType.DEP, TimeType.SCHEDULED, datetime(1900, 1, 1, hour=23, minute=57), None
                     )
                 ],
             ),
@@ -55,10 +55,14 @@ class TestLocationsParser:
                 {"@wta": "00:04", "@wtd": "00:04:30", "@tpl": "THAL", "@act": "T ", "@pta": "00:04", "@ptd": "00:04"},
                 [
                     LocationUpdate(
-                        "THAL", LocationType.ARR, TimeType.SCHEDULED, datetime(1900, 1, 1, hour=0, minute=4)
+                        "THAL", LocationType.ARR, TimeType.SCHEDULED, datetime(1900, 1, 1, hour=0, minute=4), None
                     ),
                     LocationUpdate(
-                        "THAL", LocationType.DEP, TimeType.SCHEDULED, datetime(1900, 1, 1, hour=0, minute=4, second=30)
+                        "THAL",
+                        LocationType.DEP,
+                        TimeType.SCHEDULED,
+                        datetime(1900, 1, 1, hour=0, minute=4, second=30),
+                        None,
                     ),
                 ],
             ),
@@ -103,138 +107,161 @@ class TestScheduleParser:
                         type=LocationType.ARR,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 29),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="EKILBRD",
                         type=LocationType.DEP,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 23, 57),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="HARMYRS",
                         type=LocationType.ARR,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 1),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="HARMYRS",
                         type=LocationType.DEP,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 2),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="THAL",
                         type=LocationType.ARR,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 4),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="THAL",
                         type=LocationType.DEP,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 4, 30),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="BUSBY",
                         type=LocationType.ARR,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 7),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="BUSBY",
                         type=LocationType.DEP,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 7, 30),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="CLRKSTN",
                         type=LocationType.ARR,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 9, 30),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="CLRKSTN",
                         type=LocationType.DEP,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 10, 30),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="GIFNOCK",
                         type=LocationType.ARR,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 13),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="GIFNOCK",
                         type=LocationType.DEP,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 14),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="THLB",
                         type=LocationType.ARR,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 16),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="THLB",
                         type=LocationType.DEP,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 16, 30),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="PLKSHWW",
                         type=LocationType.ARR,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 19),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="PLKSHWW",
                         type=LocationType.DEP,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 19, 30),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="CRSMYLF",
                         type=LocationType.ARR,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 21, 30),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="CRSMYLF",
                         type=LocationType.DEP,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 22, 30),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="HARMYRL",
                         type=LocationType.PASS,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 23, 59, 30),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="BUSBYJ",
                         type=LocationType.PASS,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 18),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="MRHSSJ",
                         type=LocationType.PASS,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 24),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="MRHSNJ",
                         type=LocationType.PASS,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 24, 30),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="GLGCBSJ",
                         type=LocationType.PASS,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 27),
+                        length=None,
                     ),
                 ],
                 service=ServiceUpdate(
@@ -248,12 +275,14 @@ class TestScheduleParser:
                         type=LocationType.PASS,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 39),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="SHLDJN",
                         type=LocationType.PASS,
                         time_type=TimeType.SCHEDULED,
                         time=datetime(1900, 1, 1, 0, 43),
+                        length=None,
                     ),
                 ],
                 service=ServiceUpdate(

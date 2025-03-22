@@ -77,6 +77,7 @@ class LocationUpdate:
     type: LocationType
     time_type: TimeType
     time: datetime
+    length: int | None
 
     def to_dict(self) -> dict:
         return {
@@ -84,6 +85,7 @@ class LocationUpdate:
             "type": self.type.value,
             "time_type": self.time_type.value,
             "time": self.time.strftime("%H:%M:%S"),
+            "length": self.length,
         }
 
 

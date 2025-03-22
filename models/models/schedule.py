@@ -77,7 +77,7 @@ class LocationsParser:
                 raw_ts = value if len(value.split(":")) == 3 else f"{value}:00"
 
                 updates.append(
-                    LocationUpdate(tpl, location_type, TimeType.SCHEDULED, datetime.strptime(raw_ts, "%H:%M:%S"))
+                    LocationUpdate(tpl, location_type, TimeType.SCHEDULED, datetime.strptime(raw_ts, "%H:%M:%S"), None)
                 )
             except InvalidLocationTypeKey:
                 continue

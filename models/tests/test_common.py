@@ -59,13 +59,16 @@ class TestServiceUpdate:
 
     def test__to_dict(self) -> None:
 
-        service = ServiceUpdate(rid="rid", uid="uid", ts=datetime(2024, 8, 11), passenger=False, toc="SOU")
+        service = ServiceUpdate(
+            rid="rid", uid="uid", ts=datetime(2024, 8, 11), passenger=False, toc="SOU", train_id="123"
+        )
         assert service.to_dict() == {
             "rid": "rid",
             "uid": "uid",
             "ts": "2024-08-11T00:00:00",
             "passenger": False,
             "toc": "SOU",
+            "trainId": "123",
         }
 
 
@@ -78,11 +81,7 @@ class TestLocationUpdate:
             type=LocationType.ARR,
             time_type=TimeType.ACTUAL,
             time=datetime(year=1900, month=1, day=1, hour=11, minute=0, second=0),
+            length=4,
         )
 
-        assert location.to_dict() == {
-            "tpl": "tpl",
-            "type": "ARR",
-            "time_type": "ACT",
-            "time": "11:00:00",
-        }
+        assert location.to_dict() == {"tpl": "tpl", "type": "ARR", "time_type": "ACT", "time": "11:00:00", "length": 4}

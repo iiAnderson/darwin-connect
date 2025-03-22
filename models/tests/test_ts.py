@@ -28,7 +28,7 @@ class TestServiceParser:
     @freeze_time("2024-07-15")
     def test(self) -> None:
 
-        body = {"@rid": "202407188098087", "@uid": "P98087", "@ssd": "2024-07-18", "@toc": "SOU", "trainId": "def"}
+        body = {"@rid": "202407188098087", "@uid": "P98087", "@ssd": "2024-07-18", "@toc": "SOU", "@trainId": "def"}
 
         ts = datetime.now()
 
@@ -79,12 +79,14 @@ class TestArrivalParser:
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 37),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="TPL1",
                         type=LocationType.ARR,
                         time_type=TimeType.ACTUAL,
                         time=datetime(1900, 1, 1, 17, 38),
+                        length=None,
                     ),
                 ],
             ),
@@ -110,12 +112,14 @@ class TestDepartureParser:
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 37),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="TPL1",
                         type=LocationType.DEP,
                         time_type=TimeType.ACTUAL,
                         time=datetime(1900, 1, 1, 17, 38),
+                        length=None,
                     ),
                 ],
             ),
@@ -143,60 +147,70 @@ class TestLocationsParser:
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 8),
+                length=None,
             ),
             LocationUpdate(
                 tpl="YALDING",
                 type=LocationType.ARR,
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 23),
+                length=None,
             ),
             LocationUpdate(
                 tpl="YALDING",
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 24),
+                length=None,
             ),
             LocationUpdate(
                 tpl="WTRNGBY",
                 type=LocationType.ARR,
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 27),
+                length=None,
             ),
             LocationUpdate(
                 tpl="WTRNGBY",
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 28),
+                length=None,
             ),
             LocationUpdate(
                 tpl="EFARLGH",
                 type=LocationType.ARR,
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 32),
+                length=None,
             ),
             LocationUpdate(
                 tpl="EFARLGH",
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 33),
+                length=None,
             ),
             LocationUpdate(
                 tpl="MSTONEW",
                 type=LocationType.ARR,
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 37),
+                length=None,
             ),
             LocationUpdate(
                 tpl="MSTONEW",
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 37),
+                length=None,
             ),
             LocationUpdate(
                 tpl="STROOD",
                 type=LocationType.ARR,
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 18, 2),
+                length=None,
             ),
         ]
 
@@ -212,6 +226,7 @@ class TestLocationsParser:
                 "@ptd": "17:03",
                 "ns5:dep": {"@et": "17:08", "@src": "Darwin"},
                 "ns5:plat": {"@platsup": "true", "@cisPlatsup": "true", "#text": "1"},
+                "ns5:length": 7,
             },
         }
 
@@ -223,6 +238,7 @@ class TestLocationsParser:
                 type=LocationType.DEP,
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 8),
+                length=7,
             )
         ]
 
@@ -246,60 +262,70 @@ class TestTSParser:
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 8),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="YALDING",
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 23),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="YALDING",
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 24),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="WTRNGBY",
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 27),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="WTRNGBY",
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 28),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="EFARLGH",
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 32),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="EFARLGH",
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 33),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="MSTONEW",
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 37),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="MSTONEW",
                         type=LocationType.DEP,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 37),
+                        length=None,
                     ),
                     LocationUpdate(
                         tpl="STROOD",
                         type=LocationType.ARR,
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 18, 2),
+                        length=5,
                     ),
                 ],
             )

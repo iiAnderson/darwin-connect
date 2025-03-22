@@ -128,7 +128,8 @@
                                 "@platsup": "true",
                                 "@cisPlatsup": "true",
                                 "#text": "3"
-                            }
+                            },
+                            "ns5:length": 5
                         }
                     ]
                 }

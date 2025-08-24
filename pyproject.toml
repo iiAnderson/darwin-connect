@@ -9,6 +9,8 @@ package-mode = false
 python = "^3.11"
 isort = "^5.13.2"
 black = "^24.4.2"
+clients = {path = "./clients", develop = true}
+models = {path = "./models", develop = true}
 
 [tool.poetry.group.dev.dependencies]
 freezegun = "^1.5.1"

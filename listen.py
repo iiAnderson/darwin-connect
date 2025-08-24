@@ -24,7 +24,7 @@ class RawMessageHandler(MessageHandlerInterface):
     ) -> None: ...
 
     def on_message(self, raw_message: RawMessage) -> None:
-        if raw_message.message_type == MessageType.TS:
+        if raw_message.message_type == MessageType.TS or raw_message.message_type == MessageType.SC:
             print(raw_message)
 
 
@@ -65,7 +65,7 @@ def main() -> None:
             if log_timer > 300:
                 print("Still connected")
                 log_timer = 0
-
+    
             log_timer += 1
             time.sleep(1)
 

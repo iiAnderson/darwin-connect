@@ -78,6 +78,8 @@ class LocationUpdate:
     time_type: TimeType
     time: datetime
     length: int | None
+    cancelled: bool
+    avg_loading: int | None
 
     def to_dict(self) -> dict:
         return {
@@ -86,6 +88,8 @@ class LocationUpdate:
             "time_type": self.time_type.value,
             "time": self.time.strftime("%H:%M:%S"),
             "length": self.length,
+            "cancelled": self.cancelled,
+            "avgLoading": self.avg_loading,
         }
 
 
@@ -98,6 +102,7 @@ class ServiceUpdate:
     passenger: Optional[bool]
     toc: str
     train_id: str
+    cancel_reason: str | None
 
     def to_dict(self) -> dict:
         return {
@@ -107,6 +112,7 @@ class ServiceUpdate:
             "passenger": self.passenger,
             "toc": self.toc,
             "trainId": self.train_id,
+            "cancelReason": self.cancel_reason,
         }
 
 

@@ -60,7 +60,7 @@ class TestServiceUpdate:
     def test__to_dict(self) -> None:
 
         service = ServiceUpdate(
-            rid="rid", uid="uid", ts=datetime(2024, 8, 11), passenger=False, toc="SOU", train_id="123"
+            rid="rid", uid="uid", ts=datetime(2024, 8, 11), passenger=False, toc="SOU", train_id="123", cancel_reason=None
         )
         assert service.to_dict() == {
             "rid": "rid",
@@ -69,6 +69,22 @@ class TestServiceUpdate:
             "passenger": False,
             "toc": "SOU",
             "trainId": "123",
+            "cancelReason": None,
+        }
+
+    def test__to_dict_cancel_reason(self) -> None:
+
+        service = ServiceUpdate(
+            rid="rid", uid="uid", ts=datetime(2024, 8, 11), passenger=False, toc="SOU", train_id="123", cancel_reason="832"
+        )
+        assert service.to_dict() == {
+            "rid": "rid",
+            "uid": "uid",
+            "ts": "2024-08-11T00:00:00",
+            "passenger": False,
+            "toc": "SOU",
+            "trainId": "123",
+            "cancelReason": "832",
         }
 
 
@@ -82,6 +98,21 @@ class TestLocationUpdate:
             time_type=TimeType.ACTUAL,
             time=datetime(year=1900, month=1, day=1, hour=11, minute=0, second=0),
             length=4,
+            cancelled=False,
+            avg_loading=None,
         )
 
-        assert location.to_dict() == {"tpl": "tpl", "type": "ARR", "time_type": "ACT", "time": "11:00:00", "length": 4}
+        assert location.to_dict() == {"tpl": "tpl", "type": "ARR", "time_type": "ACT", "time": "11:00:00", "length": 4, "cancelled": False, "avgLoading": None}
+
+    def test__to_dict_cancelled(self) -> None:
+
+        location = LocationUpdate(
+            tpl="tpl",
+            type=LocationType.ARR,
+            time_type=TimeType.ACTUAL,
+            time=datetime(year=1900, month=1, day=1, hour=11, minute=0, second=0),
+            length=4,
+            cancelled=True,
+            avg_loading=100,
+        )
+        assert location.to_dict() == {"tpl": "tpl", "type": "ARR", "time_type": "ACT", "time": "11:00:00", "length": 4, "cancelled": True, "avgLoading": 100}

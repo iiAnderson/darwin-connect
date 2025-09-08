@@ -42,7 +42,7 @@ class ServiceParser:
         toc = str(body.get("@toc", ""))
         train_id = str(body.get("@trainId", ""))
 
-        return ServiceUpdate(rid, uid, ts, passenger=False, toc=toc, train_id=train_id)
+        return ServiceUpdate(rid, uid, ts, passenger=False, toc=toc, train_id=train_id, cancel_reason=None)
 
 
 class TimeTypeParser:
@@ -82,7 +82,7 @@ class ArrivalParser:
                 raw_ts = value if len(value.split(":")) == 3 else f"{value}:00"
 
                 updates.append(
-                    LocationUpdate(tpl, LocationType.ARR, time_type, datetime.strptime(raw_ts, "%H:%M:%S"), length)
+                    LocationUpdate(tpl, LocationType.ARR, time_type, datetime.strptime(raw_ts, "%H:%M:%S"), length, False, None)
                 )
 
             except InvalidTimeType:
@@ -115,7 +115,7 @@ class DepartureParser:
                 raw_ts = value if len(value.split(":")) == 3 else f"{value}:00"
 
                 updates.append(
-                    LocationUpdate(tpl, LocationType.DEP, time_type, datetime.strptime(raw_ts, "%H:%M:%S"), length)
+                    LocationUpdate(tpl, LocationType.DEP, time_type, datetime.strptime(raw_ts, "%H:%M:%S"), length, False, None)
                 )
 
             except InvalidTimeType:

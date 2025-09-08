@@ -33,7 +33,7 @@ class TestServiceParser:
         ts = datetime.now()
 
         assert ServiceParser.parse(body, ts) == ServiceUpdate(
-            "202407188098087", "P98087", ts, False, "SOU", train_id="def"
+            "202407188098087", "P98087", ts, False, "SOU", train_id="def", cancel_reason=None
         )
 
     @pytest.mark.parametrize(
@@ -80,6 +80,8 @@ class TestArrivalParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 37),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                     LocationUpdate(
                         tpl="TPL1",
@@ -87,6 +89,8 @@ class TestArrivalParser:
                         time_type=TimeType.ACTUAL,
                         time=datetime(1900, 1, 1, 17, 38),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                 ],
             ),
@@ -113,6 +117,8 @@ class TestDepartureParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 37),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                     LocationUpdate(
                         tpl="TPL1",
@@ -120,6 +126,8 @@ class TestDepartureParser:
                         time_type=TimeType.ACTUAL,
                         time=datetime(1900, 1, 1, 17, 38),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                 ],
             ),
@@ -148,6 +156,8 @@ class TestLocationsParser:
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 8),
                 length=None,
+                cancelled=False,
+                avg_loading=None,
             ),
             LocationUpdate(
                 tpl="YALDING",
@@ -155,6 +165,8 @@ class TestLocationsParser:
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 23),
                 length=None,
+                cancelled=False,
+                avg_loading=None,
             ),
             LocationUpdate(
                 tpl="YALDING",
@@ -162,6 +174,8 @@ class TestLocationsParser:
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 24),
                 length=None,
+                cancelled=False,
+                avg_loading=None,
             ),
             LocationUpdate(
                 tpl="WTRNGBY",
@@ -169,6 +183,8 @@ class TestLocationsParser:
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 27),
                 length=None,
+                cancelled=False,
+                avg_loading=None,
             ),
             LocationUpdate(
                 tpl="WTRNGBY",
@@ -176,6 +192,8 @@ class TestLocationsParser:
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 28),
                 length=None,
+                cancelled=False,
+                avg_loading=None,
             ),
             LocationUpdate(
                 tpl="EFARLGH",
@@ -183,6 +201,8 @@ class TestLocationsParser:
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 32),
                 length=None,
+                cancelled=False,
+                avg_loading=None,
             ),
             LocationUpdate(
                 tpl="EFARLGH",
@@ -190,6 +210,8 @@ class TestLocationsParser:
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 33),
                 length=None,
+                cancelled=False,
+                avg_loading=None,
             ),
             LocationUpdate(
                 tpl="MSTONEW",
@@ -197,6 +219,8 @@ class TestLocationsParser:
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 37),
                 length=None,
+                cancelled=False,
+                avg_loading=None,
             ),
             LocationUpdate(
                 tpl="MSTONEW",
@@ -204,6 +228,8 @@ class TestLocationsParser:
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 37),
                 length=None,
+                cancelled=False,
+                avg_loading=None,
             ),
             LocationUpdate(
                 tpl="STROOD",
@@ -211,6 +237,8 @@ class TestLocationsParser:
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 18, 2),
                 length=None,
+                cancelled=False,
+                avg_loading=None,
             ),
         ]
 
@@ -239,6 +267,8 @@ class TestLocationsParser:
                 time_type=TimeType.ESTIMATED,
                 time=datetime(1900, 1, 1, 17, 8),
                 length=7,
+                cancelled=False,
+                avg_loading=None,
             )
         ]
 
@@ -255,7 +285,7 @@ class TestTSParser:
 
         assert locs == [
             FormattedMessage(
-                service=ServiceUpdate(rid="202407188098087", uid="P98087", ts=ts, passenger=False, toc="", train_id=""),
+                service=ServiceUpdate(rid="202407188098087", uid="P98087", ts=ts, passenger=False, toc="", train_id="", cancel_reason=None),
                 locations=[
                     LocationUpdate(
                         tpl="TONBDG",
@@ -263,6 +293,8 @@ class TestTSParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 8),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                     LocationUpdate(
                         tpl="YALDING",
@@ -270,6 +302,8 @@ class TestTSParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 23),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                     LocationUpdate(
                         tpl="YALDING",
@@ -277,6 +311,8 @@ class TestTSParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 24),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                     LocationUpdate(
                         tpl="WTRNGBY",
@@ -284,6 +320,8 @@ class TestTSParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 27),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                     LocationUpdate(
                         tpl="WTRNGBY",
@@ -291,6 +329,8 @@ class TestTSParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 28),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                     LocationUpdate(
                         tpl="EFARLGH",
@@ -298,6 +338,8 @@ class TestTSParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 32),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                     LocationUpdate(
                         tpl="EFARLGH",
@@ -305,6 +347,8 @@ class TestTSParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 33),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                     LocationUpdate(
                         tpl="MSTONEW",
@@ -312,6 +356,8 @@ class TestTSParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 37),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                     LocationUpdate(
                         tpl="MSTONEW",
@@ -319,6 +365,8 @@ class TestTSParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 17, 37),
                         length=None,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                     LocationUpdate(
                         tpl="STROOD",
@@ -326,6 +374,8 @@ class TestTSParser:
                         time_type=TimeType.ESTIMATED,
                         time=datetime(1900, 1, 1, 18, 2),
                         length=5,
+                        cancelled=False,
+                        avg_loading=None,
                     ),
                 ],
             )

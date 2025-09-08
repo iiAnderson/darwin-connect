@@ -54,7 +54,12 @@ class ServiceParser:
 
         is_passenger_service = cls.get_passenger_status(body)
 
-        return ServiceUpdate(rid, uid, ts, is_passenger_service, toc, train_id)
+        try:
+            cancel_reason = body["ns2:cancelReason"]
+        except KeyError:
+            cancel_reason = None
+
+        return ServiceUpdate(rid, uid, ts, is_passenger_service, toc, train_id, cancel_reason)
 
 
 @dataclass
@@ -68,6 +73,16 @@ class LocationsParser:
         except KeyError:
             raise InvalidLocation(f"No @tpl found on {body}")
 
+        try:
+            cancelled = body['@can'] == "true"
+        except KeyError:
+            cancelled = False
+
+        try:
+            avg_loading = int(body['@avgLoading'])
+        except KeyError:
+            avg_loading = None
+
         updates: list[LocationUpdate] = []
 
         for key, value in body.items():
@@ -77,7 +92,7 @@ class LocationsParser:
                 raw_ts = value if len(value.split(":")) == 3 else f"{value}:00"
 
                 updates.append(
-                    LocationUpdate(tpl, location_type, TimeType.SCHEDULED, datetime.strptime(raw_ts, "%H:%M:%S"), None)
+                    LocationUpdate(tpl, location_type, TimeType.SCHEDULED, datetime.strptime(raw_ts, "%H:%M:%S"), None, cancelled, avg_loading)
                 )
             except InvalidLocationTypeKey:
                 continue

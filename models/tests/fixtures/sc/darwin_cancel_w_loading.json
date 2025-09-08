@@ -1,0 +1,67 @@
+{
+    "Pport": {
+        "@xmlns": "http://www.thalesgroup.com/rtti/PushPort/v16",
+        "@xmlns:ns2": "http://www.thalesgroup.com/rtti/PushPort/Schedules/v3",
+        "@xmlns:ns3": "http://www.thalesgroup.com/rtti/PushPort/Schedules/v2",
+        "@xmlns:ns4": "http://www.thalesgroup.com/rtti/PushPort/Formations/v2",
+        "@xmlns:ns5": "http://www.thalesgroup.com/rtti/PushPort/Forecasts/v3",
+        "@xmlns:ns6": "http://www.thalesgroup.com/rtti/PushPort/Formations/v1",
+        "@xmlns:ns7": "http://www.thalesgroup.com/rtti/PushPort/StationMessages/v1",
+        "@xmlns:ns8": "http://www.thalesgroup.com/rtti/PushPort/TrainAlerts/v1",
+        "@xmlns:ns9": "http://www.thalesgroup.com/rtti/PushPort/TrainOrder/v1",
+        "@xmlns:ns10": "http://www.thalesgroup.com/rtti/PushPort/TDData/v1",
+        "@xmlns:ns11": "http://www.thalesgroup.com/rtti/PushPort/Alarms/v1",
+        "@xmlns:ns12": "http://thalesgroup.com/RTTI/PushPortStatus/root_1",
+        "@ts": "2025-09-08T18:28:32.4324949+01:00",
+        "@version": "16.0",
+        "uR": {
+            "@updateOrigin": "CIS",
+            "@requestSource": "NA01",
+            "@requestID": "1348076576-1",
+            "schedule": {
+                "@rid": "202509087102856",
+                "@uid": "G02856",
+                "@trainId": "2V61",
+                "@rsid": "CH149300",
+                "@ssd": "2025-09-08",
+                "@toc": "CH",
+                "ns2:OR": {
+                    "@wtd": "19:56",
+                    "@tpl": "MARYLBN",
+                    "@act": "TB",
+                    "@can": "true",
+                    "@ptd": "19:56",
+                    "@avgLoading": "28"
+                },
+                "ns2:PP": [
+                    {
+                        "@wtp": "20:03",
+                        "@tpl": "NEASDSJ",
+                        "@can": "true"
+                    }
+                ],
+                "ns2:IP": [
+                    {
+                        "@wta": "20:38:30",
+                        "@wtd": "20:39",
+                        "@tpl": "GTMSNDN",
+                        "@act": "T ",
+                        "@can": "true",
+                        "@pta": "20:39",
+                        "@ptd": "20:39",
+                        "@avgLoading": "13"
+                    }
+                ],
+                "ns2:DT": {
+                    "@wta": "21:02",
+                    "@pta": "21:02",
+                    "@avgLoading": "0",
+                    "@tpl": "AYLSPWY",
+                    "@act": "TF",
+                    "@can": "true"
+                },
+                "ns2:cancelReason": "832"
+            }
+        }
+    }
+}

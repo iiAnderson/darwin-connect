@@ -112,6 +112,9 @@ class TestScheduleParser:
 
         assert msg == [
             FormattedMessage(
+                service=ServiceUpdate(
+                    rid="202406258080789", uid="P80789", ts=ts, passenger=True, toc="SR", train_id="2J11", cancel_reason=None
+                ),
                 locations=[
                     LocationUpdate(
                         tpl="GLGC",
@@ -321,11 +324,11 @@ class TestScheduleParser:
                         avg_loading=None,
                     ),
                 ],
-                service=ServiceUpdate(
-                    rid="202406258080789", uid="P80789", ts=ts, passenger=True, toc="SR", train_id="2J11", cancel_reason=None
-                ),
             ),
             FormattedMessage(
+                service=ServiceUpdate(
+                    rid="202406268083879", uid="P83879", ts=ts, passenger=False, toc="SR", train_id="5J11", cancel_reason=None
+                ),
                 locations=[
                     LocationUpdate(
                         tpl="GLGCBSJ",
@@ -346,9 +349,6 @@ class TestScheduleParser:
                         avg_loading=None,
                     ),
                 ],
-                service=ServiceUpdate(
-                    rid="202406268083879", uid="P83879", ts=ts, passenger=False, toc="SR", train_id="5J11", cancel_reason=None
-                ),
             ),
         ]
 
@@ -363,6 +363,15 @@ class TestScheduleParser:
 
         assert msg == [
       FormattedMessage(
+          service=ServiceUpdate(
+                      rid='202509087102856',
+                      uid='G02856',
+                      ts=datetime(2025, 9, 8, 18, 28, 32, 432494, tzinfo=timezone(timedelta(seconds=3600))),
+                      passenger=True,
+                      toc='CH',
+                      train_id='2V61',
+                      cancel_reason='832',
+                  ),
           locations=[
                         LocationUpdate(
                             tpl='AYLSPWY',
@@ -410,14 +419,5 @@ class TestScheduleParser:
                             avg_loading=None,
                         ),
                     ],
-          service=ServiceUpdate(
-                      rid='202509087102856',
-                      uid='G02856',
-                      ts=datetime(2025, 9, 8, 18, 28, 32, 432494, tzinfo=timezone(timedelta(seconds=3600))),
-                      passenger=True,
-                      toc='CH',
-                      train_id='2V61',
-                      cancel_reason='832',
-                  ),
       ),
   ]

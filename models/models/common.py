@@ -94,6 +94,19 @@ class LocationUpdate:
 
 
 @dataclass
+class LoadingData:
+
+    coach_number: int
+    loading: int
+
+    def to_dict(self) -> dict:
+        return {
+            "coachNumber": self.coach_number,
+            "loading": self.loading,
+        }
+
+
+@dataclass
 class ServiceUpdate:
 
     rid: str
@@ -119,12 +132,20 @@ class ServiceUpdate:
 @dataclass
 class FormattedMessage:
 
-    locations: list[LocationUpdate]
     service: ServiceUpdate
+    locations: list[LocationUpdate] | None = None
+    loading: list[LoadingData] | None = None
 
     def to_messages(self) -> list[dict]:
 
-        data = [loc.to_dict() for loc in self.locations]
+        data = []
+
+        if self.locations:
+            data.extend([loc.to_dict() for loc in self.locations])
+
+        if self.loading:
+            data.extend([load.to_dict() for load in self.loading])
+
         data.append(self.service.to_dict())
 
         return data

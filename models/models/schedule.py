@@ -155,4 +155,4 @@ class ScheduleParser(MessageParserInterface):
         for raw_loc in raw_locs:
             updates.extend(LocationsParser.parse(raw_loc))
 
-        return FormattedMessage(updates, ServiceParser.parse(body, ts))
+        return FormattedMessage(service=ServiceParser.parse(body, ts), locations=updates)

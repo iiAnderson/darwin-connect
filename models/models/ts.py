@@ -186,6 +186,6 @@ class TSParser(MessageParserInterface):
         for message in msg_ts:
 
             locations = LocationsParser.parse(message)
-            messages.append(FormattedMessage(locations, ServiceParser.parse(message, ts)))
+            messages.append(FormattedMessage(service=ServiceParser.parse(message, ts), locations=locations))
 
         return messages

@@ -1,0 +1,70 @@
+{
+  "Pport": {
+    "@xmlns": "http://www.thalesgroup.com/rtti/PushPort/v16",
+    "@xmlns:ns2": "http://www.thalesgroup.com/rtti/PushPort/Schedules/v3",
+    "@xmlns:ns3": "http://www.thalesgroup.com/rtti/PushPort/Schedules/v2",
+    "@xmlns:ns4": "http://www.thalesgroup.com/rtti/PushPort/Formations/v2",
+    "@xmlns:ns5": "http://www.thalesgroup.com/rtti/PushPort/Forecasts/v3",
+    "@xmlns:ns6": "http://www.thalesgroup.com/rtti/PushPort/Formations/v1",
+    "@xmlns:ns7": "http://www.thalesgroup.com/rtti/PushPort/StationMessages/v1",
+    "@xmlns:ns8": "http://www.thalesgroup.com/rtti/PushPort/TrainAlerts/v1",
+    "@xmlns:ns9": "http://www.thalesgroup.com/rtti/PushPort/TrainOrder/v1",
+    "@xmlns:ns10": "http://www.thalesgroup.com/rtti/PushPort/TDData/v1",
+    "@xmlns:ns11": "http://www.thalesgroup.com/rtti/PushPort/Alarms/v1",
+    "@xmlns:ns12": "http://thalesgroup.com/RTTI/PushPortStatus/root_1",
+    "@ts": "2025-10-21T21:53:25.6127517+01:00",
+    "@version": "16.0",
+    "uR": {
+      "@updateOrigin": "CIS",
+      "@requestSource": "at55",
+      "@requestID": "0000000000037105",
+      "formationLoading": {
+        "@fid": "202510218007676-001",
+        "@rid": "202510218007676",
+        "@tpl": "FRSTGT",
+        "@wta": "21:53",
+        "@wtd": "21:53:30",
+        "@pta": "21:53",
+        "@ptd": "21:53",
+        "ns6:loading": [
+          {
+            "@coachNumber": "1",
+            "#text": "26"
+          },
+          {
+            "@coachNumber": "2",
+            "#text": "34"
+          },
+          {
+            "@coachNumber": "3",
+            "#text": "27"
+          },
+          {
+            "@coachNumber": "4",
+            "#text": "14"
+          },
+          {
+            "@coachNumber": "5",
+            "#text": "11"
+          },
+          {
+            "@coachNumber": "6",
+            "#text": "10"
+          },
+          {
+            "@coachNumber": "7",
+            "#text": "22"
+          },
+          {
+            "@coachNumber": "8",
+            "#text": "14"
+          },
+          {
+            "@coachNumber": "9",
+            "#text": "24"
+          }
+        ]
+      }
+    }
+  }
+}

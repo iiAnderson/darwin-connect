@@ -5,7 +5,7 @@ from datetime import datetime
 
 from models.common import (
     FormattedMessage,
-    LoadingData,
+    LoadingUpdate,
     MessageParserInterface,
     ServiceUpdate,
 )
@@ -45,7 +45,7 @@ class ServiceParser:
 class LoadingParser:
 
     @classmethod
-    def parse(cls, body: dict) -> list[LoadingData]:
+    def parse(cls, body: dict, tpl: str) -> list[LoadingUpdate]:
 
         try:
             loading_data = body["ns6:loading"]
@@ -55,13 +55,13 @@ class LoadingParser:
         if type(loading_data) is dict:
             loading_data = [loading_data]
 
-        updates: list[LoadingData] = []
+        updates: list[LoadingUpdate] = []
 
         for loading in loading_data:
             try:
                 coach_number = int(loading["@coachNumber"])
                 loading_value = int(loading["#text"])
-                updates.append(LoadingData(coach_number=coach_number, loading=loading_value))
+                updates.append(LoadingUpdate(tpl=tpl, coach_number=coach_number, loading=loading_value))
             except (KeyError, ValueError):
                 continue
 
@@ -96,7 +96,8 @@ class LOParser(MessageParserInterface):
         messages = []
 
         for message in formation_loading:
-            loading_updates = LoadingParser.parse(message)
+            tpl = str(message.get("@tpl", ""))
+            loading_updates = LoadingParser.parse(message, tpl)
             service = ServiceParser.parse(message, ts)
             messages.append(FormattedMessage(service=service, loading=loading_updates))
 

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from models.common import FormattedMessage, LoadingData, ServiceUpdate
+from models.common import FormattedMessage, LoadingUpdate, ServiceUpdate
 from models.lo import (
     InvalidFormationLoading,
     InvalidServiceUpdate,
@@ -51,9 +51,9 @@ class TestLoadingParser:
 
         body = {"ns6:loading": {"@coachNumber": "1", "#text": "26"}}
 
-        result = LoadingParser.parse(body)
+        result = LoadingParser.parse(body, "TESTPL")
 
-        assert result == [LoadingData(coach_number=1, loading=26)]
+        assert result == [LoadingUpdate(tpl="TESTPL", coach_number=1, loading=26)]
 
     def test__multiple_coaches(self) -> None:
 
@@ -65,19 +65,19 @@ class TestLoadingParser:
             ]
         }
 
-        result = LoadingParser.parse(body)
+        result = LoadingParser.parse(body, "TESTPL")
 
         assert result == [
-            LoadingData(coach_number=1, loading=26),
-            LoadingData(coach_number=2, loading=34),
-            LoadingData(coach_number=3, loading=27),
+            LoadingUpdate(tpl="TESTPL", coach_number=1, loading=26),
+            LoadingUpdate(tpl="TESTPL", coach_number=2, loading=34),
+            LoadingUpdate(tpl="TESTPL", coach_number=3, loading=27),
         ]
 
     def test__no_loading_data(self) -> None:
 
         body = {"@rid": "202510218007676"}
 
-        result = LoadingParser.parse(body)
+        result = LoadingParser.parse(body, "TESTPL")
 
         assert result == []
 
@@ -85,7 +85,7 @@ class TestLoadingParser:
 
         body = {"ns6:loading": {"@coachNumber": "invalid", "#text": "26"}}
 
-        result = LoadingParser.parse(body)
+        result = LoadingParser.parse(body, "TESTPL")
 
         # Should skip invalid entries
         assert result == []
@@ -114,15 +114,15 @@ class TestLOParser:
                 cancel_reason=None,
             ),
             loading=[
-                LoadingData(coach_number=1, loading=26),
-                LoadingData(coach_number=2, loading=34),
-                LoadingData(coach_number=3, loading=27),
-                LoadingData(coach_number=4, loading=14),
-                LoadingData(coach_number=5, loading=11),
-                LoadingData(coach_number=6, loading=10),
-                LoadingData(coach_number=7, loading=22),
-                LoadingData(coach_number=8, loading=14),
-                LoadingData(coach_number=9, loading=24),
+                LoadingUpdate(tpl="FRSTGT", coach_number=1, loading=26),
+                LoadingUpdate(tpl="FRSTGT", coach_number=2, loading=34),
+                LoadingUpdate(tpl="FRSTGT", coach_number=3, loading=27),
+                LoadingUpdate(tpl="FRSTGT", coach_number=4, loading=14),
+                LoadingUpdate(tpl="FRSTGT", coach_number=5, loading=11),
+                LoadingUpdate(tpl="FRSTGT", coach_number=6, loading=10),
+                LoadingUpdate(tpl="FRSTGT", coach_number=7, loading=22),
+                LoadingUpdate(tpl="FRSTGT", coach_number=8, loading=14),
+                LoadingUpdate(tpl="FRSTGT", coach_number=9, loading=24),
             ],
         )
 

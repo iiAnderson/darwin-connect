@@ -94,13 +94,15 @@ class LocationUpdate:
 
 
 @dataclass
-class LoadingData:
+class LoadingUpdate:
 
+    tpl: str
     coach_number: int
     loading: int
 
     def to_dict(self) -> dict:
         return {
+            "tpl": self.tpl,
             "coachNumber": self.coach_number,
             "loading": self.loading,
         }
@@ -134,7 +136,7 @@ class FormattedMessage:
 
     service: ServiceUpdate
     locations: list[LocationUpdate] | None = None
-    loading: list[LoadingData] | None = None
+    loading: list[LoadingUpdate] | None = None
 
     def to_messages(self) -> list[dict]:
 

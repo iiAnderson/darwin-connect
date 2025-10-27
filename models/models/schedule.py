@@ -56,6 +56,10 @@ class ServiceParser:
 
         try:
             cancel_reason = body["ns2:cancelReason"]
+
+            if type(cancel_reason) is dict:
+                cancel_reason = cancel_reason["#text"]
+                
         except KeyError:
             cancel_reason = None
 

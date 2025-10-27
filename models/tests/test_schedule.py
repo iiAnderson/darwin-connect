@@ -37,6 +37,21 @@ class TestServiceParser:
             rid="202406258080789", uid="P80789", toc="abc", ts=ts, passenger=True, train_id="def", cancel_reason=None
         )
 
+    def test__cancel_reason_as_dict(self) -> None:
+
+        data = {
+            "@rid": "202406258080789",
+            "@uid": "P80789",
+            "@toc": "abc",
+            "@trainId": "def",
+            "ns2:cancelReason": {"#text": "832"}
+        }
+        ts = datetime.now()
+
+        assert ServiceParser.parse(data, ts) == ServiceUpdate(
+            rid="202406258080789", uid="P80789", toc="abc", ts=ts, passenger=True, train_id="def", cancel_reason="832"
+        )
+
     @pytest.mark.parametrize(
         "input,error_msg", [({"@rid": "abc"}, "Cannot extract uid from"), ({"@uid": "abc"}, "Cannot extract rid from")]
     )

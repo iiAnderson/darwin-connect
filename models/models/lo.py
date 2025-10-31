@@ -39,7 +39,7 @@ class ServiceParser:
         uid = ""
         train_id = ""
 
-        return ServiceUpdate(rid, uid, ts, passenger=False, toc=tpl, train_id=train_id, cancel_reason=None)
+        return ServiceUpdate(rid, uid, ts, passenger=False, toc="", train_id=train_id, cancel_reason=None)
 
 
 class LoadingParser:

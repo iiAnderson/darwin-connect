@@ -6,6 +6,7 @@ import os
 import socket
 import time
 import zlib
+import json
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
@@ -166,5 +167,34 @@ class RawMessage:
             message_type = body["message_type"]
         except KeyError:
             raise InvalidMessage(f"MessageType not found in frame headers {body}")
-        
+
         return cls(message_type, body)
+
+    @classmethod
+    def create_from_kafka_json(cls, body: dict) -> RawMessage:
+
+        try:
+            raw_body = body["bytes"]
+        except KeyError:
+            raise InvalidMessage(f"Bytes not found in Kafka JSON: {body}")
+        
+        try:
+            data = json.loads(raw_body)
+        except json.JSONDecodeError:
+            raise InvalidMessage(f"Invalid JSON: {raw_body}")
+
+        try:
+            uR = data["uR"]
+        except KeyError:
+            raise InvalidMessage(f"MessageType not found in Kafka JSON: {data}")
+
+        if 'TS' in uR:
+            message_type = "TS"
+        elif 'schedule' in uR:
+            message_type = "SC"
+        elif 'formationLoading' in uR:
+            message_type = "LO"
+        else:
+            raise InvalidMessage(f"Unknown message type: {uR}")
+
+        return cls(message_type, data)

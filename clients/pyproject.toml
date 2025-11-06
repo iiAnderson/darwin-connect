@@ -10,6 +10,7 @@ python = "^3.11"
 pytest = "^8.2.2"
 stomp-py = "^8.1.2"
 xmltodict = "^0.13.0"
+confluent-kafka = "^2.3.0"
 
 [build-system]
 requires = ["poetry-core"]

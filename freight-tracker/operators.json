@@ -1,0 +1,5 @@
+{
+  "_comment": "TRUST numeric toc_id -> operator. Only IDs confirmed from live data are filled in; add others as you confirm them. Unknown IDs are shown as the raw number.",
+  "54": {"short": "GBRf", "name": "GB Railfreight", "evidence": "25 activations from GBRF-named terminals, 8-9 Nov 2026"},
+  "09": {"short": "FLHH", "name": "Freightliner Heavy Haul", "evidence": "8 activations from FHH-named terminals, 8 Nov 2026"}
+}

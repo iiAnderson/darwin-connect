@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "freight-tracker"
+version = "0.1.0"
+description = "Live freight / non-passenger board for any TIPLOC, from Network Rail TRUST (Kafka) and CIF timetable data"
+authors = ["Robbie Anderson <ra12g14@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "freight_tracker" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+confluent-kafka = "^2.3.0"
+boto3 = { version = "^1.34", optional = true }
+
+[tool.poetry.extras]
+s3 = ["boto3"]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+
+[tool.poetry.scripts]
+freight-tracker = "freight_tracker.__main__:main"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

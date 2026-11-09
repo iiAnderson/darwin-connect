@@ -1,0 +1,8 @@
+secrets.env
+config.toml
+state.json
+state.tmp
+out/
+cif/
+logs/
+.venv/

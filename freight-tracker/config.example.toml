@@ -1,0 +1,30 @@
+# Copy to config.toml. Relative paths are relative to this file.
+
+[tracker]
+# TIPLOCs to build boards for. Each gets /board/<TIPLOC>.json
+watch = ["ASHJN"]
+
+# CIF timetable: a .json.gz file, or a directory (the newest *.json.gz is used).
+cif_path = "cif"
+# Optional: pull the newest CIF from S3 into cif_path first (needs `poetry install -E s3` + AWS creds).
+# cif_s3_uri = "s3://my-bucket/rdm/schedule/"
+cif_check_minutes = 30
+
+state_file = "state.json"        # live train state, saved every write_seconds; lets restarts resume
+output_dir = "out"               # also write <TIPLOC>.json files here ("" to disable)
+write_seconds = 60
+operators_file = "operators.json"
+
+horizon_hours = 24               # how far ahead to list trains
+max_rows = 9                     # the ESP32 board shows up to 9
+passed_after_estimate_minutes = 10   # junctions rarely report: call a train "passed" this long after its estimate
+passed_linger_minutes = 5            # then keep it on the board this much longer
+not_activated_grace_minutes = 30     # drop never-activated / cancelled trains this long after booked time
+
+[http]
+host = "0.0.0.0"
+port = 8090
+
+[kafka]
+secrets_file = "secrets.env"
+max_rewind_minutes = 240         # never rewind further than this on start (RDM keeps ~4.5h)
